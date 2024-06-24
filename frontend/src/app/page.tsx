@@ -1,7 +1,11 @@
-"use client";
-import HomePage from "@/pages/HomePage";
-import LoginPage from "@/pages/LoginPage";
 
-export default function MainLayout() {
-  return <LoginPage />;
+import Login from "./(pages)/login/page";
+import Signup from "./(pages)/signUp/page";
+
+export default function Page() {
+  return (
+    <div>
+      <Signup/>
+    </div>
+  );
 }
