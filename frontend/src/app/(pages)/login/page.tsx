@@ -31,6 +31,12 @@ const Login: React.FC = () => {
     router.push("/forgotPass");
   };
 
+  const handleSignup = (event: React.MouseEvent<HTMLAnchorElement>) => {
+    event.preventDefault();
+
+    router.push("/signUp");
+  };
+
   return (
     <div className="container relative">
       <div>
@@ -92,9 +98,13 @@ const Login: React.FC = () => {
           <Button title="Login" onClick={handleLogin} />
           <h2 className="text-lg text-center">
             Don't have an account yet?{" "}
-            <span className="text-red-900 underline hover:opacity-90">
-              Signup
-            </span>
+            <a
+              href="#"
+              onClick={handleSignup}
+              className="text-red-900 underline hover:opacity-90"
+            >
+              SignUp
+            </a>
           </h2>
         </form>
       </div>
