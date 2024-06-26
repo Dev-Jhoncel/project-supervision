@@ -6,7 +6,7 @@ import Signup from "./(pages)/signUp/page";
 export default function Page() {
   return (
     <div>
-      <Sidebar />
+      <Login />
     </div>
   );
 }
