@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import "../login/login.css";
 import { useRouter } from "next/navigation";
-import Button from "@/components/button";
+import Button from "@/components/buttons/button";
 
 const Signup: React.FC = () => {
   const [name, setName] = useState("");
