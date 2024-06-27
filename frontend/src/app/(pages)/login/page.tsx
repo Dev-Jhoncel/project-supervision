@@ -28,7 +28,7 @@ const Login: React.FC = () => {
   const handleForgotPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
 
-    router.push("/forgotPass");
+    router.push("/forgotpass");
   };
 
   const handleSignup = (event: React.MouseEvent<HTMLAnchorElement>) => {

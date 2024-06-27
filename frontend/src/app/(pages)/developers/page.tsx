@@ -1,6 +1,7 @@
 "use client";
 import Layout from "@/components/Layout";
 import React, { useState } from "react";
+import { RiEditLine } from "react-icons/ri";
 
 interface Developer {
   name: string;
@@ -8,6 +9,7 @@ interface Developer {
   project: number;
   status: string;
   ratings: number;
+  profilePicture: string;
 }
 
 const initialDevelopersData: Developer[] = [
@@ -17,6 +19,7 @@ const initialDevelopersData: Developer[] = [
     project: 7,
     status: "Vacant",
     ratings: 5,
+    profilePicture: "cprofile.jpg",
   },
   {
     name: "Francis Cutamora",
@@ -24,6 +27,7 @@ const initialDevelopersData: Developer[] = [
     project: 10,
     status: "Vacant",
     ratings: 5,
+    profilePicture: "fprofile.jpg",
   },
   {
     name: "Jovie Jurac",
@@ -31,6 +35,7 @@ const initialDevelopersData: Developer[] = [
     project: 9,
     status: "Busy",
     ratings: 4,
+    profilePicture: "jprofile.jpg",
   },
 ];
 
@@ -44,6 +49,7 @@ const DeveloperTable: React.FC = () => {
     project: 0,
     status: "Vacant",
     ratings: 0,
+    profilePicture: "",
   });
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
 
@@ -61,6 +67,7 @@ const DeveloperTable: React.FC = () => {
       project: 0,
       status: "Vacant",
       ratings: 0,
+      profilePicture: "",
     });
   };
 
@@ -81,6 +88,7 @@ const DeveloperTable: React.FC = () => {
         project: 0,
         status: "Vacant",
         ratings: 0,
+        profilePicture: "",
       });
     }
   };
@@ -114,7 +122,7 @@ const DeveloperTable: React.FC = () => {
               placeholder="Name"
               value={newDeveloper.name}
               onChange={handleInputChange}
-              className="border px-4 py-2 rounded border border-red"
+              className="border px-4 py-2 rounded border-red-900"
             />
             <input
               type="text"
@@ -122,7 +130,7 @@ const DeveloperTable: React.FC = () => {
               placeholder="Department"
               value={newDeveloper.department}
               onChange={handleInputChange}
-              className="border px-4 py-2 rounded"
+              className="border px-4 py-2 rounded border-red-900"
             />
             <input
               type="number"
@@ -130,13 +138,13 @@ const DeveloperTable: React.FC = () => {
               placeholder="Project"
               value={newDeveloper.project}
               onChange={handleInputChange}
-              className="border px-4 py-2 rounded"
+              className="border px-4 py-2 rounded border-red-900"
             />
             <select
               name="status"
               value={newDeveloper.status}
               onChange={handleInputChange}
-              className="border px-4 py-2 rounded"
+              className="border px-4 py-2 rounded border-red-900"
             >
               <option value="Vacant">Vacant</option>
               <option value="Busy">Busy</option>
@@ -147,7 +155,7 @@ const DeveloperTable: React.FC = () => {
               placeholder="Ratings"
               value={newDeveloper.ratings}
               onChange={handleInputChange}
-              className="border px-4 py-2 rounded"
+              className="border px-4 py-2 rounded border-red-900"
               max={5}
               min={0}
             />
@@ -177,7 +185,16 @@ const DeveloperTable: React.FC = () => {
           <tbody>
             {developers.map((dev, index) => (
               <tr key={index}>
-                <td className="py-8 px-4 border-b border-dashed">{dev.name}</td>
+                <td className="py-8 px-4 border-b border-dashed">
+                  <div className="flex items-center gap-2">
+                    <img
+                      src={dev.profilePicture}
+                      alt={`${dev.name}'s profile`}
+                      className="w-6 h-6 rounded-full object-cover border-2 border-gray-300"
+                    />
+                    <span>{dev.name}</span>
+                  </div>
+                </td>
                 <td className="py-8 px-4 border-b border-dashed">
                   {dev.department}
                 </td>
