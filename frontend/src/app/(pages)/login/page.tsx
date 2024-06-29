@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import "../login/login.css";
 import { useRouter } from "next/navigation";
-import Button from "@/components/button";
+import Button from "@/components/buttons/button";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -28,7 +28,7 @@ const Login: React.FC = () => {
   const handleForgotPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
 
-    router.push("/forgotPass");
+    router.push("/forgotpass");
   };
 
   const handleSignup = (event: React.MouseEvent<HTMLAnchorElement>) => {
