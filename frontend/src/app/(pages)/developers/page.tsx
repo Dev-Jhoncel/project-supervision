@@ -227,7 +227,7 @@ const DeveloperTable: React.FC = () => {
                 ) : (
                   <>
                     <td className="py-8 px-4 border-b border-dashed">
-                      <div className="flex items-center gap-2">
+                      <div className="text-sm flex items-center gap-2">
                         <img
                           src={dev.profilePicture}
                           alt={`${dev.name}'s profile`}
@@ -236,10 +236,10 @@ const DeveloperTable: React.FC = () => {
                         <span>{dev.name}</span>
                       </div>
                     </td>
-                    <td className="py-8 px-4 border-b border-dashed cursor-pointer hover-font-bold">
+                    <td className=" text-sm py-8 px-4 border-b border-dashed cursor-pointer hover-font-bold">
                       {dev.department}
                     </td>
-                    <td className="py-8 px-4 border-b border-dashed">
+                    <td className=" text-sm py-8 px-4 border-b border-dashed">
                       {dev.project}
                     </td>
                     <td className="text-sm py-8 px-4 border-b border-dashed">
@@ -258,14 +258,14 @@ const DeveloperTable: React.FC = () => {
                         <option value="Busy">Busy</option>
                       </select>
                     </td>
-                    <td className="text-yellow-500 py-8 px-4 border-b border-dashed">
+                    <td className="text-sm text-yellow-500 py-8 px-4 border-b border-dashed">
                       {"★".repeat(dev.ratings)}
                       {"☆".repeat(5 - dev.ratings)}
                     </td>
                     <td className="py-8 px-4 border-b border-dashed">
                       <button
                         onClick={() => handleEditDeveloper(index)}
-                        className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+                        className=" text -sm bg-yellow-500 text-white px-4 py-2 rounded mr-2"
                       >
                         <CiEdit />
                       </button>
