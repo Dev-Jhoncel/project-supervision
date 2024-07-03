@@ -32,7 +32,7 @@ const OtpPassword = () => {
           className="flex flex-col w-full p-10 rounded-lg bg-white gap-6"
         >
           <h1 className="text-4xl font-bold self-center p-2">
-            One Time Password
+            Forgot Password?
           </h1>
           <h2 className="text-sm text-gray 500 text-center">
             We’ve sent an sms to mobile number, please enter the 5-digit code
