@@ -5,6 +5,9 @@ import Image from "next/image";
 import "../login/login.css";
 import { useRouter } from "next/navigation";
 import Button from "@/components/buttons/button";
+import { SIGN_UP_URL } from "@/constants/config";
+import { Response } from "../../../interfaces/Response";
+import toast from "react-hot-toast";
 
 const Signup: React.FC = () => {
   const [firstName, setFirstName] = useState("");
@@ -17,13 +20,17 @@ const Signup: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     if (!firstName.trim()) {
       setErrorMessage("Please enter your first name.");
       return;
     }
     if (!lastName.trim()) {
       setErrorMessage("Please enter your last name.");
+      return;
+    }
+    if (!middleName.trim()) {
+      setErrorMessage("Please enter your middle name.");
       return;
     }
     if (!email.trim()) {
@@ -39,8 +46,40 @@ const Signup: React.FC = () => {
       return;
     }
 
+    const data = {
+      first_name: firstName.toUpperCase().trim(),
+      last_name: lastName.toUpperCase().trim(),
+      middle_name: middleName.toUpperCase().trim(),
+      suffix: suffix.toUpperCase().trim(),
+      email_address: email.trim(),
+      mobile_no: mobileNumber.trim(),
+      password: password.trim(),
+    };
+
+    //Integrating to endpoint register
+    const registerUser = await fetch(SIGN_UP_URL, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    const result = await registerUser.json();
+    console.log(result);
+    console.log(registerUser.status);
+
+    if (registerUser.status != 201) {
+      const { code, message, data } = result;
+      let error_message =
+        registerUser.status === 500 ? "Unable to add user" : message;
+      toast.error(error_message);
+    } else {
+      const response: Response = result;
+      console.log(response);
+      toast.success(response.message);
+    }
     setErrorMessage("");
-    // Add your signup logic here
   };
 
   const handleLogin = (event: React.MouseEvent<HTMLAnchorElement>) => {

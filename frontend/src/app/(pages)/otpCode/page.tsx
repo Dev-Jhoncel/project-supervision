@@ -32,32 +32,32 @@ const OtpPassword = () => {
           className="flex flex-col w-full p-10 rounded-lg bg-white gap-6"
         >
           <h1 className="text-4xl font-bold self-center p-2">
-            Forgot Password?
+            One Time Password
           </h1>
           <h2 className="text-sm text-gray 500 text-center">
-            We’ve sent an email to username@gmail.com, please enter the 5-digit
-            code below.
+            We’ve sent an sms to mobile number, please enter the 5-digit code
+            below.
           </h2>
           <div className="flex flex-col items-center space-y-2 ">
             <div className="flex justify-center space-x-2">
               <input
-                maxlength="1"
+                maxLength={1}
                 className="w-14 h-20 text-center border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-900"
               />
               <input
-                maxlength="1"
+                maxLength={1}
                 className="w-14 h-20 text-center border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-900"
               />
               <input
-                maxlength="1"
+                maxLength={1}
                 className="w-14 h-20 text-center border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-900"
               />
               <input
-                maxlength="1"
+                maxLength={1}
                 className="w-14 h-20 text-center border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-900"
               />
               <input
-                maxlength="1"
+                maxLength={1}
                 className="w-14 h-20
                  text-center border-2 border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-red-900"
               />

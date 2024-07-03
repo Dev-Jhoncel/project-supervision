@@ -36,8 +36,8 @@ const ForgotPassword = () => {
         >
           <h1 className="text-4xl font-bold self-center">Forgot Password?</h1>
           <h2 className="text-sm text-gray 500 text-center">
-            Enter the email address registered with your account. We'll send you
-            a link to reset your password.
+            {`Enter the email address registered with your account. We'll send you
+            a link to reset your password.`}
           </h2>
 
           <label htmlFor="email" className="pl-2 font-medium">

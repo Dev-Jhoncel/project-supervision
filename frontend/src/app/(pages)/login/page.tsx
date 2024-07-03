@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import "../login/login.css";
 import { useRouter } from "next/navigation";
+import { LOGIN_URL } from "@/constants/config";
+import { Response } from "../../../interfaces/Response";
 import Button from "@/components/buttons/button";
+import { toast } from "react-toastify";
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -11,7 +14,7 @@ const Login: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email.trim()) {
       setErrorMessage("Please enter your email.");
       return;
@@ -21,14 +24,34 @@ const Login: React.FC = () => {
       setErrorMessage("Please enter your password.");
       return;
     }
+    const data = {
+      username: email,
+      password: password,
+    };
 
-    setErrorMessage("");
+    const getLogin = await fetch(LOGIN_URL, {
+      method: "POST",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    const result = await getLogin.json();
+    console.log(getLogin.status);
+    if (getLogin.status != 200) {
+      const { code, message, data } = result;
+      setErrorMessage(message);
+    } else {
+      const response: Response = result;
+      toast.success("Successfully Login");
+      router.push("/otpCode");
+    }
   };
 
   const handleForgotPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
 
-    router.push("/forgotpass");
+    router.push("/forgotPass");
   };
 
   const handleSignup = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -93,11 +116,11 @@ const Login: React.FC = () => {
             className="text-red-900 underline hover:opacity-90"
             onClick={handleForgotPassword}
           >
-            Forgotten Password?
+            Forgot Password?
           </a>
           <Button title="Login" onClick={handleLogin} />
           <h2 className="text-lg text-center">
-            Don't have an account yet?{" "}
+            {`Don't have an account yet?`}{" "}
             <a
               href="#"
               onClick={handleSignup}
