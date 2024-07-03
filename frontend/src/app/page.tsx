@@ -1,7 +1,12 @@
-"use client";
-import HomePage from "@/pages/HomePage";
-import LoginPage from "@/pages/LoginPage";
+import Login from "./(pages)/login/page";
+import OtpPassword from "./(pages)/otpCode/page";
+import Sidebar from "../components/sidebar/page";
+import Signup from "./(pages)/signUp/page";
 
-export default function MainLayout() {
-  return <LoginPage />;
+export default function Page() {
+  return (
+    <div>
+      <Login />
+    </div>
+  );
 }
