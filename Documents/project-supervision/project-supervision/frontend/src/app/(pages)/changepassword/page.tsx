@@ -6,35 +6,31 @@ import { useRouter } from "next/navigation";
 import Button from "@/components/buttons/button";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const router = useRouter();
 
-  const handleLogin = () => {
-    if (!email.trim()) {
-      setErrorMessage("Please enter your email.");
-      return;
-    }
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
 
     if (!password.trim()) {
       setErrorMessage("Please enter your password.");
       return;
     }
 
+    if (!confirmPassword.trim()) {
+      setErrorMessage("Please confirm your password.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setErrorMessage("Passwords do not match.");
+      return;
+    }
+
     setErrorMessage("");
-  };
-
-  const handleForgotPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-
-    router.push("/forgotpass");
-  };
-
-  const handleSignup = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-
-    router.push("/signUp");
+    // Handle successful password setting here
   };
 
   return (
@@ -58,20 +54,12 @@ const Login: React.FC = () => {
         </h1>
         <form
           onSubmit={handleLogin}
-          className="flex flex-col w-4/5  p-10 rounded-lg bg-white gap-6"
+          className="flex flex-col w-4/5 p-10 rounded-lg bg-white gap-6"
         >
-          <h1 className="text-4xl font-bold self-center">Log In</h1>
-          <label htmlFor="email" className="pl-2 font-medium">
-            Email
-          </label>
-          <input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="username@gmail.com"
-            className="p-6 rounded-md border border-red-900"
-          />
+          <h1 className="text-3xl font-bold text-center">Set New Password</h1>
+          <p className="text-gray-900 text-sm text-center">
+            Ensure your password is strong and secure.
+          </p>
           <label htmlFor="password" className="pl-2 font-medium">
             Password
           </label>
@@ -83,29 +71,22 @@ const Login: React.FC = () => {
             placeholder="Enter your password"
             className="p-6 rounded-md border border-red-900"
           />
+          <label htmlFor="confirmPassword" className="pl-2 font-medium">
+            Confirm Password
+          </label>
+          <input
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="Confirm your password"
+            className="p-6 rounded-md border border-red-900"
+          />
 
           {errorMessage && (
             <p className="text-red-500 text-sm">{errorMessage}</p>
           )}
-
-          <a
-            href="#"
-            className="text-red-900 underline hover:opacity-90"
-            onClick={handleForgotPassword}
-          >
-            Forgotten Password?
-          </a>
-          <Button title="Login" onClick={handleLogin} />
-          <h2 className="text-lg text-center">
-            Don't have an account yet?{" "}
-            <a
-              href="#"
-              onClick={handleSignup}
-              className="text-red-900 underline hover:opacity-90"
-            >
-              SignUp
-            </a>
-          </h2>
+          <Button title="Submit" />
         </form>
       </div>
     </div>
