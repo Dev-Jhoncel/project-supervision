@@ -6,7 +6,6 @@ import Box from "@/components/boxdashboard/Box";
 import TopDevelopers from "@/components/topdevs/TopDeveloper";
 import AllDeveloper from "@/components/developerlist/AllDeveloper";
 import ProjectList from "@/components/projectlist/ProjectList";
-import OverallProgress from "@/components/overallprogress/OverallProgress";
 
 const Dashboard: React.FC = () => {
   return (
@@ -16,7 +15,7 @@ const Dashboard: React.FC = () => {
           <h1 className="font-bold text-2xl">Dashboard</h1>
         </div>
 
-        <div className="flex gap-4 flex-wrap">
+        <div className="grid grid-cols-3 gap-4">
           <Box
             icon={<FaProjectDiagram />}
             title="Projects"
@@ -37,14 +36,13 @@ const Dashboard: React.FC = () => {
           />
         </div>
 
-        <div className="flex gap-6">
-          <div className="flex flex-col w-6/12">
+        <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-2 w-full gap-4">
             <TopDevelopers />
-            <ProjectList />
-          </div>
-          <div className="flex flex-col w-5/12">
             <AllDeveloper />
-            <OverallProgress />
+          </div>
+          <div className="w-full">
+            <ProjectList />
           </div>
         </div>
       </div>

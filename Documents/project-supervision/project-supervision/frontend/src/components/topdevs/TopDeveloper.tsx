@@ -42,8 +42,10 @@ const StarRating = ({ rating }: { rating: number }) => {
 const TopDevelopers = () => {
   return (
     <div className="flex flex-row">
-      <div className="bg-red-100 shadow-xl bg-gradient-to-tl rounded-b-2xl rounded-t-2xl w-12/12 h-64 ml-2 pr-20 -m-1">
-        <h1 className="font-bold text-xl mt-5 ml-4">Top Developers</h1>
+      <div className="bg-white-100 shadow-lg bg-gradient-to-tl rounded-2xl border w-full h-64">
+        <div className="px-6 py-2">
+          <h1 className="font-bold text-md  text-red-900">Top Developers</h1>
+        </div>
         <table className="w-full bg-white-50 bg-opacity-60 rounded-xl text-left border-dashed border-spacing-1">
           <thead>
             <tr>

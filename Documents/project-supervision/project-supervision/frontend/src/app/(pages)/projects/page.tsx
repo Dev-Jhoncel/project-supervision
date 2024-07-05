@@ -1,9 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import Layout from "@/components/Layout";
-import { MdArrowDropDown } from "react-icons/md";
+import { MdAddCircleOutline, MdArrowDropDown } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
+import Modal from "@/components/generalModal/Modal";
+import Button from "@/components/buttons/button";
 
 interface Project {
   module: string;
@@ -56,6 +58,8 @@ const ProjectCard: React.FC = () => {
     [key: number]: string | undefined;
   }>({});
   const [selectedProject, setSelectedProject] = useState<string>("Project 1");
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenModal, setIsOpenModal] = useState(false);
 
   const handleStatusChange = (index: number, status: string) => {
     setSelectedStatus((prev) => ({
@@ -79,8 +83,6 @@ const ProjectCard: React.FC = () => {
     }
   };
 
-  const [isOpen, setIsOpen] = useState(false);
-
   const toggleDropdown = () => {
     setIsOpen(!isOpen);
   };
@@ -102,7 +104,10 @@ const ProjectCard: React.FC = () => {
           <CiSearch className="absolute left-5 top-3.5 text-black-400" />
         </div>
         <div className="ml-auto">
-          <button className="flex items-center gap-2 bg-white-500 text-black px-4 py-2 rounded-full hover:bg-green-50 border border-black">
+          <button
+            className="flex items-center gap-2 bg-white-500 text-black px-4 py-2 rounded-full hover:bg-green-50 border border-black"
+            onClick={() => setIsOpenModal(true)}
+          >
             <div className="border border-green-900 bg-green-900 rounded-full">
               <FaPlus className="text-white" />
             </div>
@@ -198,6 +203,46 @@ const ProjectCard: React.FC = () => {
           </tbody>
         </table>
       </div>
+      <Modal isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
+        <div className="flex justify-center items-center  bg-gray-100">
+          <div className="bg-white rounded-lg shadow-lg p-8 w-96 border-t-4 border-red-900 h-96">
+            <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
+              Create New Project
+            </h2>
+            <form>
+              <div className="mb-10">
+                <input
+                  type="text"
+                  placeholder="Project Name"
+                  className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                />
+              </div>
+              <div className="mb-10 relative">
+                <input
+                  type="text"
+                  placeholder="Modules"
+                  className="w-full p-2 pr-10 border border-gray-300 rounded-full drop-shadow-xl"
+                />
+                <button
+                  type="button"
+                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white text-red-900"
+                >
+                  <MdAddCircleOutline className="w-6 h-6 absolute right-2 top-1/2 transform -translate-y-1/2 hover:text-gray-900 cursor-pointer text-red-900" />
+                </button>
+              </div>
+              <div className="mb-4 flex justify-between">
+                <input
+                  type="date"
+                  placeholder="Due"
+                  className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                />
+              </div>
+
+              <Button title="Add" />
+            </form>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { RiArrowDropDownLine } from "react-icons/ri";
 import SearchBar from "../searchbar/SearchBar";
 import UserProfile from "@/app/(pages)/userprofile/page.";
+import { FaTimes } from "react-icons/fa";
 
 const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
@@ -17,7 +18,7 @@ const Header = () => {
   };
 
   return (
-    <div>
+    <div className="sticky top-0">
       <div className="w-full shadow text-white flex justify-between items-center p-4">
         <h1 className="text-xl font-bold"></h1>
         <div className="flex items-center gap-6">
@@ -32,7 +33,7 @@ const Header = () => {
           >
             <div className="logo flex flex-row items-center">
               <Image
-                src={`/profile.jpg`}
+                src={`/userprofile1.jpg`}
                 alt="profile"
                 width={30}
                 height={30}
@@ -56,11 +57,10 @@ const Header = () => {
 
       {/* Profile Drawer */}
       {isProfileOpen && (
-        <div
-          className="fixed top-0 right-0 h-full w-1/4 bg-white shadow-lg z-50"
-          onClick={closeProfileDrawer}
-        >
-          {/* Content of the profile drawer */}
+        <div className="fixed top-0 right-0 h-full w-1/4 bg-white shadow-lg z-50">
+          <div className="absolute top-4 left-4 bg-red-800 p-2 rounded-full">
+            <FaTimes onClick={closeProfileDrawer} className="text-white" />
+          </div>
           <UserProfile />
         </div>
       )}
