@@ -5,7 +5,6 @@ import { MdAddCircleOutline, MdArrowDropDown } from "react-icons/md";
 import { FaPlus } from "react-icons/fa";
 import { CiSearch } from "react-icons/ci";
 import Modal from "@/components/generalModal/Modal";
-import Button from "@/components/buttons/button";
 
 interface Project {
   module: string;
@@ -46,6 +45,13 @@ const projects: Project[] = [
   },
 ];
 
+const developers = [
+  "Christine Mae Ocana",
+  "Jovie Jurac",
+  "Francis Cutamora",
+  "Marian Adonay",
+];
+
 const statusOptions: ("Ongoing" | "Delay" | "Completed" | "At Risk")[] = [
   "Ongoing",
   "Delay",
@@ -60,12 +66,36 @@ const ProjectCard: React.FC = () => {
   const [selectedProject, setSelectedProject] = useState<string>("Project 1");
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [modules, setModules] = useState<
+    { module: string; developer: string }[]
+  >([]);
+  const [newModule, setNewModule] = useState<string>("");
+  const [newDeveloper, setNewDeveloper] = useState<string>("");
 
   const handleStatusChange = (index: number, status: string) => {
     setSelectedStatus((prev) => ({
       ...prev,
       [index]: status,
     }));
+  };
+
+  const handleCancelEdit = () => {
+    setIsOpenModal(false);
+    setNewModule("");
+    setNewDeveloper("");
+    setModules([]);
+  };
+
+  const handleAddProjectModal = () => {
+    setIsOpenModal(true);
+  };
+
+  const addModule = () => {
+    if (newModule && newDeveloper) {
+      setModules([...modules, { module: newModule, developer: newDeveloper }]);
+      setNewModule("");
+      setNewDeveloper("");
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -95,18 +125,10 @@ const ProjectCard: React.FC = () => {
         <h1 className="font-bold text-2xl">Projects</h1>
       </div>
       <div className="flex items-center justify-between gap-96">
-        <div className="relative">
-          <input
-            type="text"
-            placeholder="Search for project"
-            className="border rounded-full pl-10 pr-4 py-2 italic w-96 hover:bg-gray-50"
-          />
-          <CiSearch className="absolute left-5 top-3.5 text-black-400" />
-        </div>
         <div className="ml-auto">
           <button
             className="flex items-center gap-2 bg-white-500 text-black px-4 py-2 rounded-full hover:bg-green-50 border border-black"
-            onClick={() => setIsOpenModal(true)}
+            onClick={handleAddProjectModal}
           >
             <div className="border border-green-900 bg-green-900 rounded-full">
               <FaPlus className="text-white" />
@@ -204,41 +226,92 @@ const ProjectCard: React.FC = () => {
         </table>
       </div>
       <Modal isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
-        <div className="flex justify-center items-center  bg-gray-100">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-96 border-t-4 border-red-900 h-96">
+        <div className="flex justify-center items-center rounded-lg bg-gray-50">
+          <div className="bg-white rounded-lg p-8 w-full max-w-lg border-t-4 border-red-900">
             <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
               Create New Project
             </h2>
             <form>
-              <div className="mb-10">
+              <div className="mb-6">
                 <input
                   type="text"
                   placeholder="Project Name"
-                  className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                  className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
                 />
               </div>
-              <div className="mb-10 relative">
-                <input
-                  type="text"
-                  placeholder="Modules"
-                  className="w-full p-2 pr-10 border border-gray-300 rounded-full drop-shadow-xl"
-                />
-                <button
-                  type="button"
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 rounded-full bg-white text-red-900"
-                >
-                  <MdAddCircleOutline className="w-6 h-6 absolute right-2 top-1/2 transform -translate-y-1/2 hover:text-gray-900 cursor-pointer text-red-900" />
-                </button>
+              <div className="mb-6 relative ">
+                <div className="flex items-center">
+                  <input
+                    type="text"
+                    value={newModule}
+                    onChange={(e) => setNewModule(e.target.value)}
+                    placeholder="Module"
+                    className="w-2/3 p-3 border border-gray-300 rounded-full drop-shadow-xl"
+                  />
+                  <select
+                    value={newDeveloper}
+                    onChange={(e) => setNewDeveloper(e.target.value)}
+                    className="ml-2 w-1/3 p-3 border border-gray-300 rounded-full drop-shadow-xl"
+                  >
+                    <option value="" disabled>
+                      Select Developer
+                    </option>
+                    {developers.map((dev) => (
+                      <option key={dev} value={dev}>
+                        {dev}
+                      </option>
+                    ))}
+                  </select>
+                  <button
+                    type="button"
+                    className="ml-2 p-2 rounded-full bg-white text-red-900"
+                    onClick={addModule}
+                  >
+                    <MdAddCircleOutline className="w-6 h-6 hover:text-gray-900 cursor-pointer text-red-900" />
+                  </button>
+                </div>
+                <div className="mt-4">
+                  {modules.map((mod, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center py-2 px-4 border-b border-gray-300"
+                    >
+                      <span>{mod.module}</span> - <span>{mod.developer}</span>
+                      <button
+                        type="button"
+                        className="text-red-600"
+                        onClick={() => {
+                          setModules(modules.filter((_, i) => i !== index));
+                        }}
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  ))}
+                </div>
               </div>
-              <div className="mb-4 flex justify-between">
+              <div className="mb-6 flex justify-between">
                 <input
                   type="date"
                   placeholder="Due"
-                  className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                  className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
                 />
               </div>
-
-              <Button title="Add" />
+              <div className="flex justify-end p-4">
+                <button
+                  type="button"
+                  onClick={handleCancelEdit}
+                  className="bg-red-500 text-white px-4 py-2 rounded-full text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white px-4 py-2 rounded-full text-sm ml-2"
+                >
+                  Save
+                </button>
+              </div>
             </form>
           </div>
         </div>

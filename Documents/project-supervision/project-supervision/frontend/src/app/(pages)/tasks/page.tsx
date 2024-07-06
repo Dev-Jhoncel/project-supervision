@@ -34,6 +34,10 @@ const TaskList: React.FC = () => {
   const [editTaskId, setEditTaskId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState<string>("");
   const [isOpenModal, setIsOpenModal] = useState(false);
+  const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+  const [newTaskLevel, setNewTaskLevel] = useState<"High" | "Medium" | "Low">(
+    "Low"
+  );
 
   const handleCheckboxChange = (taskId: number) => {
     const updatedTasks = tasks.map((task) =>
@@ -92,6 +96,22 @@ const TaskList: React.FC = () => {
     filterStatus === "All"
       ? tasks
       : tasks.filter((task) => task.status === filterStatus);
+
+  const handleAddTask = () => {
+    if (newTaskTitle.trim() === "") return;
+
+    const newTask: Task = {
+      id: tasks.length + 1,
+      title: newTaskTitle,
+      level: newTaskLevel,
+      status: "Review",
+    };
+
+    setTasks([...tasks, newTask]);
+    setIsOpenModal(false);
+    setNewTaskTitle("");
+    setNewTaskLevel("Low");
+  };
 
   return (
     <div className="p-6 flex flex-col gap-8">
@@ -264,12 +284,19 @@ const TaskList: React.FC = () => {
             <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
               Create New Task
             </h2>
-            <form>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                handleAddTask();
+              }}
+            >
               <div className="mb-10">
                 <input
                   type="text"
                   placeholder="Task Title"
                   className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                  value={newTaskTitle}
+                  onChange={(e) => setNewTaskTitle(e.target.value)}
                 />
               </div>
               <div className="mb-10 relative">
@@ -288,17 +315,39 @@ const TaskList: React.FC = () => {
                   />
                 </div>
                 <div className="w-1/2 pl-2">
-                  <select className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl">
-                    <option value="" disabled selected hidden>
+                  <select
+                    className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                    value={newTaskLevel}
+                    onChange={(e) =>
+                      setNewTaskLevel(
+                        e.target.value as "High" | "Medium" | "Low"
+                      )
+                    }
+                  >
+                    <option value="" disabled hidden>
                       Level
                     </option>
-                    <option value="high">High</option>
-                    <option value="medium">Medium</option>
-                    <option value="low">Low</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
                   </select>
                 </div>
               </div>
-              <Button title="Add" />
+              <div className="flex justify-end p-4">
+                <button
+                  type="button"
+                  onClick={() => setIsOpenModal(false)}
+                  className="bg-red-500 text-white px-4 py-2 rounded-full text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="bg-green-500 text-white px-4 py-2 rounded-full text-sm ml-2"
+                >
+                  Save
+                </button>
+              </div>
             </form>
           </div>
         </div>

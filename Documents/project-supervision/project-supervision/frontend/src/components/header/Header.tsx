@@ -57,7 +57,7 @@ const Header = () => {
 
       {/* Profile Drawer */}
       {isProfileOpen && (
-        <div className="fixed top-0 right-0 h-full w-1/4 bg-white shadow-lg z-50">
+        <div className="fixed top-0 right-0 h-full w-1/4 bg-white shadow-lg z-40">
           <div className="absolute top-4 left-4 bg-red-800 p-2 rounded-full">
             <FaTimes onClick={closeProfileDrawer} className="text-white" />
           </div>
