@@ -12,22 +12,21 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  //Checking of user credentials
   async validateUser(authPayloadDto: AuthPayloadDto) {
-    console.log('iM Here at validateUser');
     try {
       const userCredentials = await this.prisma.user.findFirstOrThrow({
         where: {
-          email_address: authPayloadDto.email,
+          email_address: authPayloadDto.username,
         },
       });
-      console.log(userCredentials);
 
-      const isMatch = COMPARE_HASH.compareHash(
+      const isMatch = await COMPARE_HASH.compareHash(
         authPayloadDto.password,
         userCredentials.password,
       );
 
-      if (!isMatch) throw new Error('Invalid Credentails');
+      if (!isMatch) throw new Error('Invalid Password');
       const token = this.jwtService.sign(userCredentials);
       return token;
     } catch (error) {

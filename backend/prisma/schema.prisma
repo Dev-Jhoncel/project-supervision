@@ -21,6 +21,7 @@ model developer {
   mobile_no     String       @default("")
   team          team?        @relation(fields: [team_id], references: [id])
   skill_sets    skill_sets[]
+  task          task[]
 
   @@index([team_id], map: "developer_teamId_fkey")
 }
@@ -38,6 +39,7 @@ model projects {
   status      status    @relation(fields: [status_id], references: [id])
   team        team?     @relation(fields: [team_id], references: [id])
   user        user?     @relation(fields: [user_id], references: [id])
+  isActive    Int       @default(1)
 
   @@index([status_id], map: "projects_status_id_fkey")
   @@index([team_id], map: "projects_team_id_fkey")
@@ -75,13 +77,15 @@ model status {
 }
 
 model task {
-  id             Int      @id @default(autoincrement())
-  decription     String   @default("")
-  priority_level String   @default("")
-  created_at     DateTime @default(now())
-  updated_at     DateTime @default(now())
+  id             Int       @id @default(autoincrement())
+  decription     String    @default("")
+  priority_level String    @default("")
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @default(now())
   user_id        Int?
-  user           user?    @relation(fields: [user_id], references: [id])
+  user           user?     @relation(fields: [user_id], references: [id])
+  developer      developer @relation(fields: [developerId], references: [id])
+  developerId    Int
 
   @@index([user_id], map: "task_userId_fkey")
 }
@@ -103,7 +107,7 @@ model user {
   suffix        String     @default("")
   created_at    DateTime   @default(now())
   updated_at    DateTime   @default(now())
-  email_address String     @default("")
+  email_address String     @unique @default("")
   password      String     @unique @default("")
   mobile_no     String     @default("")
   projects      projects[]

@@ -6,9 +6,18 @@ import { AuthService } from './auth/provider/auth.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/module/auth.module';
 import { PrismaService } from './prisma/prisma.service';
+import { ProjectsModule } from './projects/projects.module';
+import { TaskModule } from './task/task.module';
+import { DeveloperModule } from './developer/developer.module';
 
 @Module({
-  imports: [PrismaModule, AuthModule],
+  imports: [
+    PrismaModule,
+    AuthModule,
+    ProjectsModule,
+    TaskModule,
+    DeveloperModule,
+  ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService, PrismaService],
 })
