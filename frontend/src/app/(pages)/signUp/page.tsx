@@ -6,7 +6,7 @@ import "../login/login.css";
 import { useRouter } from "next/navigation";
 import Button from "@/components/buttons/button";
 import { SIGN_UP_URL } from "@/constants/config";
-import { Response } from "../../../interfaces/Response";
+import { Response } from "../../../interfaces/IResponse";
 import toast from "react-hot-toast";
 
 const Signup: React.FC = () => {

@@ -4,7 +4,7 @@ import Image from "next/image";
 import "../login/login.css";
 import { useRouter } from "next/navigation";
 import { LOGIN_URL } from "@/constants/config";
-import { Response } from "../../../interfaces/Response";
+import { Response } from "@/interfaces/Response";
 import Button from "@/components/buttons/button";
 import { toast } from "react-toastify";
 
@@ -36,6 +36,7 @@ const Login: React.FC = () => {
       },
       body: JSON.stringify(data),
     });
+
     const result = await getLogin.json();
     console.log(getLogin.status);
     if (getLogin.status != 200) {
