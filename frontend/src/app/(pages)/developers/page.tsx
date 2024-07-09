@@ -1,8 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { FaPlus } from "react-icons/fa";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
+import { FaEdit, FaPlus, FaTrash } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import Layout from "@/components/Layout";
 import Modal from "@/components/generalModal/Modal";
@@ -270,18 +268,18 @@ const DeveloperTable: React.FC = () => {
                   {"★".repeat(dev.ratings)}
                   {"☆".repeat(5 - dev.ratings)}
                 </td>
-                <td className="py-8 px-4 border-b border-dashed">
+                <td className=" border-b border-dashed">
                   <button
                     onClick={() => handleEditDeveloper(index)}
-                    className="bg-yellow-500 text-white px-4 py-2 rounded mr-2"
+                    className=" text-yellow-700 px-4 py-2 rounded mr-2"
                   >
-                    <CiEdit />
+                    <FaEdit />
                   </button>
                   <button
                     onClick={() => handleDeleteDeveloper(index)}
-                    className="bg-red-500 text-white px-4 py-2 rounded"
+                    className=" text-red-700 -ml-2 px-4 py-2 rounded"
                   >
-                    <MdOutlineDeleteOutline />
+                    <FaTrash />
                   </button>
                 </td>
               </tr>
@@ -291,7 +289,7 @@ const DeveloperTable: React.FC = () => {
 
         <Modal isOpen={isOpenModal} onClose={handleCancelEdit}>
           <div className="mt-7 ml-11 h-full">
-            <div className=" shadow-lg border bg-gradient-to-tl rounded-2xl w-full h-full -mt-9 -ml-9 border-t-4 border-t-red-900">
+            <div className="  rounded-2xl  shadow-lg w-full h-full -mt-9 -ml-4 border-t-4 border-t-red-900">
               <h1 className="text-xl mb-4 ml-2 mt-2 text-center font-bold">
                 {editingIndex !== null ? "Edit Developer" : "Add Developer"}
               </h1>

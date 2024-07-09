@@ -10,7 +10,7 @@ const Sidebar = () => {
   const [activeLink, setActiveLink] = useState("");
 
   // Function to handle navigation and setActiveLink
-  const handleClick = (page: string) => {
+  const handleClick = (page) => {
     setActiveLink(page); // First, set the active link
     router.push(`/${page}`); // Then, navigate to the page
   };

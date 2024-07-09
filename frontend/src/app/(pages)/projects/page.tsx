@@ -5,6 +5,7 @@ import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import Modal from "@/components/generalModal/Modal";
 import { MdOutlineDeleteOutline } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
+import { useRouter } from "next/navigation";
 
 interface Project {
   project: string;
@@ -54,6 +55,8 @@ const ProjectCard: React.FC = () => {
     "Ongoing" | "Delay" | "Completed" | "At Risk"
   >("Ongoing");
   const [editIndex, setEditIndex] = useState<number | null>(null);
+
+  const router = useRouter();
 
   const handleStatusChange = (index: number, status: string) => {
     setSelectedStatus((prev) => ({
@@ -122,6 +125,10 @@ const ProjectCard: React.FC = () => {
     }
   };
 
+  const handleProjectClicked = () => {
+    router.push("/modules");
+  };
+
   return (
     <div className="p-6 flex flex-col gap-9">
       <div>
@@ -164,9 +171,14 @@ const ProjectCard: React.FC = () => {
               return (
                 <tr
                   key={index}
-                  className="hover:font-semibold border-b border-gray-300 border-dashed my-2"
+                  className="hover:font-semibold cursor-pointer border-b border-gray-300 border-dashed my-2"
                 >
-                  <td className="text-sm relative py-10">{project.project}</td>
+                  <td
+                    className="text-sm relative py-10"
+                    onClick={handleProjectClicked}
+                  >
+                    {project.project}
+                  </td>
                   <td className="text-sm py-4">{project.due}</td>
                   <td className="py-4">
                     <select
@@ -188,15 +200,15 @@ const ProjectCard: React.FC = () => {
                   <td className="py-8 px-4 border-b border-dashed">
                     <button
                       onClick={() => handleEditProjectModal(index)}
-                      className="bg-yellow-600 text-white px-4 py-2 rounded mr-2"
+                      className=" text-yellow-700  rounded mr-2"
                     >
-                      <CiEdit />
+                      <FaEdit />
                     </button>
                     <button
                       onClick={() => handleDeleteProject(index)}
-                      className="bg-red-800 text-white px-4 py-2 rounded"
+                      className=" text-red-700 px-4 py-2 rounded"
                     >
-                      <MdOutlineDeleteOutline />
+                      <FaTrash />
                     </button>
                   </td>
                 </tr>
@@ -207,7 +219,7 @@ const ProjectCard: React.FC = () => {
       </div>
       <Modal isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
         <div className="flex justify-center items-center rounded-lg bg-gray-50">
-          <div className="bg-white rounded-lg p-8 w-full max-w-lg border-t-4 border-red-900">
+          <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg border-t-4 border-red-900">
             <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
               {editIndex !== null ? "Edit Project" : "Create New Project"}
             </h2>

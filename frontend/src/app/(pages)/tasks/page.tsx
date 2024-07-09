@@ -1,11 +1,8 @@
 "use client";
 import React, { useState } from "react";
 import Layout from "@/components/Layout";
-import { FaPlus, FaCheck } from "react-icons/fa";
-import { CiEdit } from "react-icons/ci";
-import { MdDelete } from "react-icons/md";
+import { FaPlus, FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 import Modal from "@/components/generalModal/Modal";
-import Button from "@/components/buttons/button";
 
 type Task = {
   id: number;
@@ -253,7 +250,7 @@ const TaskList: React.FC = () => {
                         </button>
                       ) : (
                         <button
-                          className={`hover:text-blue-900 ${
+                          className={` text-yellow-600 hover:text-blue-900 ${
                             task.status === "Done"
                               ? "cursor-not-allowed opacity-50"
                               : ""
@@ -261,14 +258,14 @@ const TaskList: React.FC = () => {
                           onClick={() => handleEditTask(task.id)}
                           disabled={task.status === "Done"}
                         >
-                          <CiEdit />
+                          <FaEdit />
                         </button>
                       )}
                       <button
-                        className="hover:text-red-900"
+                        className=" text-red-700 hover:text-red-900"
                         onClick={() => handleDeleteTask(task.id)}
                       >
-                        <MdDelete />
+                        <FaTrash />
                       </button>
                     </div>
                   </td>
@@ -280,7 +277,7 @@ const TaskList: React.FC = () => {
       </div>
       <Modal isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
         <div className="flex justify-center items-center">
-          <div className="bg-white rounded-lg shadow-lg p-8 w-96 border-t-4 border-red-900 h-auto">
+          <div className=" rounded-lg shadow-lg p-8 w-96 border-t-4 border-red-900 h-auto">
             <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
               Create New Task
             </h2>
