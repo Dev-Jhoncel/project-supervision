@@ -9,6 +9,7 @@ import sanitizeInput from "@/utils/CheckingFunction/CheckIFNumber";
 import { SendOtp } from "@/utils/OtpFunction/SendOTP";
 import { ValidateOTP } from "@/utils/OtpFunction/ValidateOTP";
 import toast from "react-hot-toast";
+import jwt from "jsonwebtoken";
 
 const OtpPassword: React.FC = () => {
   const router = useRouter();
@@ -16,13 +17,29 @@ const OtpPassword: React.FC = () => {
   useEffect(() => {
     const handleLogin = async () => {
       //decrypt jwt token
-
-      //get mobile number then send the otp
-      const { code, message, error } = await SendOtp("09959280777");
-      if (error) toast.error("Unable to Send OTP!");
+      const token = localStorage.getItem("token");
+      console.log(token);
+      const parseToken = token ? JSON.parse(token) : null;
+      if (parseToken === null) {
+        toast.error("Token was Empty!");
+        handleRedirect();
+      } else {
+        //get mobile number then send the otp
+        const decodeToken = jwt.decode(parseToken);
+        const mobile = decodeToken?.mobile_no;
+        if (decodeToken !== null) {
+          console.log();
+          const { code, message, error } = await SendOtp(mobile);
+          if (error) toast.error("Unable to Send OTP!");
+        }
+      }
     };
     handleLogin();
   }, []);
+
+  const handleRedirect = () => {
+    router.push("/");
+  };
 
   const [boxOne, setBoxOneValue] = React.useState("");
   const [boxTwo, setBoxTwoValue] = React.useState("");
@@ -30,6 +47,7 @@ const OtpPassword: React.FC = () => {
   const [boxFour, setBoxFourValue] = React.useState("");
   const [boxFive, setBoxFiveValue] = React.useState("");
   const [boxSix, setBoxSixValue] = React.useState("");
+  const [myData, setMyData] = useState<any | null>(null);
 
   const handleOnChangeOne = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {

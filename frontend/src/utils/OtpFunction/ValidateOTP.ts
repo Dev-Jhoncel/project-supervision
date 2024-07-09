@@ -5,7 +5,7 @@ import {
   OTP_VALIDATE_OTP_URL,
 } from "@/constants/config";
 import axios from "axios";
-import { IResponse } from "@/interfaces/IResponse";
+import { IResponse } from "@/interfaces/IOTPResponse";
 
 export const ValidateOTP = async (
   mobileno: string,

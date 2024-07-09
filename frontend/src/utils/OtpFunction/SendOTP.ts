@@ -5,7 +5,7 @@ import {
   OTP_PASS,
 } from "@/constants/config";
 import axios from "axios";
-import { IResponse } from "@/interfaces/IResponse";
+import { IResponse } from "@/interfaces/IOTPResponse";
 
 export const SendOtp = async (mobileno: string): Promise<IResponse> => {
   const data = {

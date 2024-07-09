@@ -4,7 +4,7 @@ import Image from "next/image";
 import "../login/login.css";
 import { useRouter } from "next/navigation";
 import { LOGIN_URL } from "@/constants/config";
-import { Response } from "@/interfaces/Response";
+import { IResponse } from "@/interfaces/IResponse";
 import Button from "@/components/buttons/button";
 import { toast } from "react-toastify";
 
@@ -43,8 +43,9 @@ const Login: React.FC = () => {
       const { code, message, data } = result;
       setErrorMessage(message);
     } else {
-      const response: Response = result;
+      const response: IResponse = result;
       toast.success("Successfully Login");
+      localStorage.setItem("token", JSON.stringify(response.data));
       router.push("/otpCode");
     }
   };

@@ -5,6 +5,7 @@ import { FaPlus } from "react-icons/fa";
 import { MdOutlineDeleteOutline, MdOutlineCancel } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface Developer {
   name: string;
@@ -228,10 +229,12 @@ const DeveloperTable: React.FC = () => {
                   <>
                     <td className="py-8 px-4 border-b border-dashed">
                       <div className="text-sm flex items-center gap-2">
-                        <img
-                          src={dev.profilePicture}
-                          alt={`${dev.name}'s profile`}
-                          className="w-6 h-6 rounded-full object-cover border-2 border-gray-300"
+                        <Image
+                          width={60}
+                          height={60}
+                          src="../../../../public/profile.png"
+                          alt="My Image"
+                          priority
                         />
                         <span>{dev.name}</span>
                       </div>
