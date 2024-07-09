@@ -6,7 +6,6 @@ import {
   HttpCode,
   Post,
   Version,
-  Request,
 } from '@nestjs/common';
 import { AuthPayloadDto } from '../dto/auth.dto';
 import { UserDetailsDto } from '../dto/user.register.dto';
@@ -22,12 +21,9 @@ export class AuthController {
 
   @Post('login')
   @Version('1')
-  async Login(
-    @Request() authPayload: AuthPayloadDto,
-  ): Promise<ICustomResponse> {
+  @HttpCode(HttpStatus.OK)
+  async Login(@Body() authPayload: AuthPayloadDto): Promise<ICustomResponse> {
     try {
-      console.log(authPayload.email);
-
       //Getting User credentails using email
       const response = await this.authService.validateUser(authPayload);
 

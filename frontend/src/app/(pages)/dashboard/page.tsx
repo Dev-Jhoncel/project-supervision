@@ -86,7 +86,7 @@ const Dashboard: React.FC = () => {
           <h1 className="font-bold text-xl mt-2 ml-4">Projects</h1>
         </div>
         <div className="bg-red-100 shadow-xl bg-gradient-to-tl rounded-b-2xl rounded-t-2xl w-7/12 h-52 ml-2 pr-20 -m-1">
-          <h1 className="font-bold text-xl mt-2 ml-4">Today's Task</h1>
+          <h1 className="font-bold text-xl mt-2 ml-4">{`Today's Task`}</h1>
         </div>
       </div>
     </Layout>

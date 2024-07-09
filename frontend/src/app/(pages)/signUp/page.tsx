@@ -6,7 +6,7 @@ import "../login/login.css";
 import { useRouter } from "next/navigation";
 import Button from "@/components/buttons/button";
 import { SIGN_UP_URL } from "@/constants/config";
-import { Response } from "../../../interfaces/Response";
+import { IResponse } from "@/interfaces/IResponse";
 import toast from "react-hot-toast";
 
 const Signup: React.FC = () => {
@@ -75,7 +75,7 @@ const Signup: React.FC = () => {
         registerUser.status === 500 ? "Unable to add user" : message;
       toast.error(error_message);
     } else {
-      const response: Response = result;
+      const response: IResponse = result;
       console.log(response);
       toast.success(response.message);
     }
