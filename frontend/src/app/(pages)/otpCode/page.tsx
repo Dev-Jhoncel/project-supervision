@@ -26,11 +26,13 @@ const OtpPassword: React.FC = () => {
       } else {
         //get mobile number then send the otp
         const decodeToken = jwt.decode(parseToken);
-        const mobile = decodeToken?.mobile_no;
-        if (decodeToken !== null) {
-          console.log();
-          const { code, message, error } = await SendOtp(mobile);
-          if (error) toast.error("Unable to Send OTP!");
+        if (decodeToken) {
+          const mobile = decodeToken?.mobile_no;
+          if (decodeToken !== null) {
+            console.log();
+            const { code, message, error } = await SendOtp(mobile);
+            if (error) toast.error("Unable to Send OTP!");
+          }
         }
       }
     };
