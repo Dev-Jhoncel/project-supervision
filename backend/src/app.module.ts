@@ -9,6 +9,8 @@ import { PrismaService } from './prisma/prisma.service';
 import { ProjectsModule } from './projects/projects.module';
 import { TaskModule } from './task/task.module';
 import { DeveloperModule } from './developer/developer.module';
+import { MailerModule } from './mailer/mailer.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -17,6 +19,11 @@ import { DeveloperModule } from './developer/developer.module';
     ProjectsModule,
     TaskModule,
     DeveloperModule,
+    MailerModule,
+    ConfigModule.forRoot({
+      isGlobal: true,
+      envFilePath: '.env',
+    }),
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService, PrismaService],
