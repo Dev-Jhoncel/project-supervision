@@ -16,7 +16,7 @@ const Sidebar = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-red-900 flex flex-col items-center p-3">
+    <div className="sticky top-0 w-64 h-screen bg-red-900 flex flex-col items-center p-3">
       <div className="logo">
         <Image
           src="/projectSupervision.png"
