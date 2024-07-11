@@ -202,13 +202,13 @@ const ProjectCard: React.FC = () => {
                       onClick={() => handleEditProjectModal(index)}
                       className=" text-yellow-700  rounded mr-2"
                     >
-                      <FaEdit />
+                      <FaEdit className="hover:text-yellow-500" />
                     </button>
                     <button
                       onClick={() => handleDeleteProject(index)}
                       className=" text-red-700 px-4 py-2 rounded"
                     >
-                      <FaTrash />
+                      <FaTrash className="hover:text-500" />
                     </button>
                   </td>
                 </tr>

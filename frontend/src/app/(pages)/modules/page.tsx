@@ -251,13 +251,13 @@ const Modulist = () => {
                     </td>
                     <td className="py-4 px-4 flex gap-2">
                       <button
-                        className="text-yellow-600 hover:text-blue-700"
+                        className="text-yellow-700 hover:text-yellow-500"
                         onClick={() => editModule(index)}
                       >
                         <FaEdit />
                       </button>
                       <button
-                        className="text-red-700 hover:text-red-700"
+                        className="text-red-700 hover:text-red-500"
                         onClick={() => deleteModule(index)}
                       >
                         <FaTrash />
