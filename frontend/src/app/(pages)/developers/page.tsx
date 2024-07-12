@@ -90,6 +90,8 @@ const DeveloperTable: React.FC = () => {
   );
   const [isRatingExceededModalOpen, setIsRatingExceededModalOpen] =
     useState(false);
+  const [selectedDeveloperToDelete, setSelectedDeveloperToDelete] =
+    useState<Developer | null>(null);
 
   const router = useRouter();
 
@@ -143,9 +145,14 @@ const DeveloperTable: React.FC = () => {
     setIsOpenModal(true);
   };
 
-  const handleDeleteDeveloper = (index: number) => {
-    const updatedDevelopers = developers.filter((_, i) => i !== index);
-    setDevelopers(updatedDevelopers);
+  const handleDeleteDeveloper = () => {
+    if (selectedDeveloperToDelete) {
+      const updatedDevelopers = developers.filter(
+        (dev) => dev !== selectedDeveloperToDelete
+      );
+      setDevelopers(updatedDevelopers);
+      setSelectedDeveloperToDelete(null); // Reset selected developer to delete
+    }
   };
 
   const handleInputChange = (
@@ -286,7 +293,7 @@ const DeveloperTable: React.FC = () => {
                       <FaEdit className="hover:text-yellow-500" />
                     </button>
                     <button
-                      onClick={() => handleDeleteDeveloper(index)}
+                      onClick={() => setSelectedDeveloperToDelete(dev)}
                       className=" text-red-900 -ml-2 px-4 py-2 rounded"
                     >
                       <FaTrash className="hover:text-red-500" />
@@ -421,6 +428,29 @@ const DeveloperTable: React.FC = () => {
               >
                 OK
               </button>
+            </div>
+          </Modal>
+
+          <Modal
+            isOpen={selectedDeveloperToDelete !== null}
+            onClose={() => setSelectedDeveloperToDelete(null)}
+          >
+            <div className="text-center">
+              <h1 className="text-xl mb-4">
+                Are you sure you want to delete this developer?
+              </h1>
+              <div className="flex items-center justify-center gap-4 cursor-pointer">
+                <p onClick={() => setSelectedDeveloperToDelete(null)}>Cancel</p>
+                <span
+                  onClick={() => {
+                    handleDeleteDeveloper();
+                    setSelectedDeveloperToDelete(null);
+                  }}
+                  className="bg-red-800 text-white text-sm px-4 py-2 rounded-2xl hover:bg-red-900 cursor-pointer"
+                >
+                  Delete
+                </span>
+              </div>
             </div>
           </Modal>
         </div>

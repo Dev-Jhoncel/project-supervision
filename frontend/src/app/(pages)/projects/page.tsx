@@ -1,11 +1,10 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
 import { FaPlus, FaEdit, FaTrash } from "react-icons/fa";
 import Modal from "@/components/generalModal/Modal";
-import { MdOutlineDeleteOutline } from "react-icons/md";
-import { CiEdit } from "react-icons/ci";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/loader/Loader";
 
 interface Project {
   project: string;
@@ -55,8 +54,18 @@ const ProjectCard: React.FC = () => {
     "Ongoing" | "Delay" | "Completed" | "At Risk"
   >("Ongoing");
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [loading, setLoading] = useState(true); // Initialize loading state
+  const [projectToDelete, setProjectToDelete] = useState<number | null>(null); // State for project to delete
 
   const router = useRouter();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleStatusChange = (index: number, status: string) => {
     setSelectedStatus((prev) => ({
@@ -107,7 +116,15 @@ const ProjectCard: React.FC = () => {
   };
 
   const handleDeleteProject = (index: number) => {
-    setProjects(projects.filter((_, i) => i !== index));
+    setProjectToDelete(index); // Set the index of the project to delete
+  };
+
+  const confirmDeleteProject = () => {
+    if (projectToDelete !== null) {
+      const updatedProjects = projects.filter((_, i) => i !== projectToDelete);
+      setProjects(updatedProjects);
+      setProjectToDelete(null); // Clear the project to delete after deletion
+    }
   };
 
   const getStatusColor = (status: string) => {
@@ -130,65 +147,137 @@ const ProjectCard: React.FC = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col gap-9">
-      <div>
-        <h1 className="font-bold text-2xl">Projects</h1>
-      </div>
-      <div className="flex items-center justify-between gap-96">
-        <div className="ml-auto">
-          <button
-            className="flex items-center gap-2 bg-white-500 text-black px-4 py-2 rounded-full hover:bg-green-50 border border-black"
-            onClick={handleAddProjectModal}
-          >
-            <div className="border border-green-900 bg-green-900 rounded-full">
-              <FaPlus className="text-white" />
-            </div>
-            Create new project
-          </button>
+    <Layout>
+      {loading ? (
+        <div className="flex items-center justify-center h-screen">
+          <Loader />
         </div>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="ml-18 min-w-full bg-white shadow-lg rounded-xl text-left border-dashed">
-          <thead>
-            <tr>
-              <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
-                Project
-              </th>
-              <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
-                Due
-              </th>
-              <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
-                Status
-              </th>
-              <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {projects.map((project, index) => {
-              const currentStatus = selectedStatus[index] || project.status;
-              return (
-                <tr
-                  key={index}
-                  className="hover:font-semibold cursor-pointer border-b border-gray-300 border-dashed my-2"
-                >
-                  <td
-                    className="text-sm relative py-10"
-                    onClick={handleProjectClicked}
-                  >
-                    {project.project}
-                  </td>
-                  <td className="text-sm py-4">{project.due}</td>
-                  <td className="py-4">
+      ) : (
+        <div className="p-6 flex flex-col gap-9">
+          <div>
+            <h1 className="font-bold text-2xl">Projects</h1>
+          </div>
+          <div className="flex items-center justify-between gap-96">
+            <div className="ml-auto">
+              <button
+                className="flex items-center gap-2 bg-white-500 text-black px-4 py-2 rounded-full hover:bg-green-50 border border-black"
+                onClick={handleAddProjectModal}
+              >
+                <div className="border border-green-900 bg-green-900 rounded-full">
+                  <FaPlus className="text-white" />
+                </div>
+                Create new project
+              </button>
+            </div>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="ml-18 min-w-full bg-white shadow-lg rounded-xl text-left border-dashed">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
+                    Project
+                  </th>
+                  <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
+                    Due
+                  </th>
+                  <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
+                    Status
+                  </th>
+                  <th className="py-2 px-4 border-b border-gray-400 text-left border-dashed">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {projects.map((project, index) => {
+                  const currentStatus = selectedStatus[index] || project.status;
+                  return (
+                    <tr
+                      key={index}
+                      className="hover:font-semibold cursor-pointer border-b border-gray-300 border-dashed my-2"
+                    >
+                      <td
+                        className="text-sm relative py-10"
+                        onClick={handleProjectClicked}
+                      >
+                        {project.project}
+                      </td>
+                      <td className="text-sm py-4">{project.due}</td>
+                      <td className="py-4">
+                        <select
+                          value={currentStatus}
+                          onChange={(e) =>
+                            handleStatusChange(index, e.target.value)
+                          }
+                          className={`pr-1 py-2 rounded text-white text-sm ${getStatusColor(
+                            currentStatus
+                          )}`}
+                        >
+                          {statusOptions.map((status) => (
+                            <option key={status} value={status}>
+                              {status}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                      <td className="py-8 px-4 border-b border-dashed">
+                        <button
+                          onClick={() => handleEditProjectModal(index)}
+                          className=" text-yellow-700  rounded mr-2"
+                        >
+                          <FaEdit className="hover:text-yellow-500" />
+                        </button>
+                        <button
+                          onClick={() => handleDeleteProject(index)}
+                          className=" text-red-700 px-4 py-2 rounded"
+                        >
+                          <FaTrash className="hover:text-500" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+          <Modal isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
+            <div className="flex justify-center items-center rounded-lg bg-gray-50">
+              <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg border-t-4 border-red-900">
+                <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
+                  {editIndex !== null ? "Edit Project" : "Create New Project"}
+                </h2>
+                <form onSubmit={handleSaveProject}>
+                  <div className="mb-6">
+                    <input
+                      type="text"
+                      placeholder="Project Name"
+                      value={newProject}
+                      onChange={(e) => setNewProject(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
+                    />
+                  </div>
+                  <div className="mb-6">
+                    <input
+                      type="date"
+                      placeholder="Due Date"
+                      value={newDueDate}
+                      onChange={(e) => setNewDueDate(e.target.value)}
+                      className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
+                    />
+                  </div>
+                  <div className="mb-6">
                     <select
-                      value={currentStatus}
+                      value={newStatus}
                       onChange={(e) =>
-                        handleStatusChange(index, e.target.value)
+                        setNewStatus(
+                          e.target.value as
+                            | "Ongoing"
+                            | "Delay"
+                            | "Completed"
+                            | "At Risk"
+                        )
                       }
-                      className={`pr-1 py-2 rounded text-white text-sm ${getStatusColor(
-                        currentStatus
-                      )}`}
+                      className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
                     >
                       {statusOptions.map((status) => (
                         <option key={status} value={status}>
@@ -196,102 +285,55 @@ const ProjectCard: React.FC = () => {
                         </option>
                       ))}
                     </select>
-                  </td>
-                  <td className="py-8 px-4 border-b border-dashed">
+                  </div>
+                  <div className="flex justify-end p-4 gap-4">
                     <button
-                      onClick={() => handleEditProjectModal(index)}
-                      className=" text-yellow-700  rounded mr-2"
+                      type="submit"
+                      className="bg-green-500 text-white px-4 py-2 rounded-full text-sm ml-2"
                     >
-                      <FaEdit className="hover:text-yellow-500" />
+                      Save
                     </button>
                     <button
-                      onClick={() => handleDeleteProject(index)}
-                      className=" text-red-700 px-4 py-2 rounded"
+                      type="button"
+                      onClick={handleCancelEdit}
+                      className="bg-red-500 text-white px-4 py-2 rounded-full text-sm"
                     >
-                      <FaTrash className="hover:text-500" />
+                      Cancel
                     </button>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-      <Modal isOpen={isOpenModal} onClose={() => setIsOpenModal(false)}>
-        <div className="flex justify-center items-center rounded-lg bg-gray-50">
-          <div className="bg-white shadow-lg rounded-lg p-8 w-full max-w-lg border-t-4 border-red-900">
-            <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
-              {editIndex !== null ? "Edit Project" : "Create New Project"}
-            </h2>
-            <form onSubmit={handleSaveProject}>
-              <div className="mb-6">
-                <input
-                  type="text"
-                  placeholder="Project Name"
-                  value={newProject}
-                  onChange={(e) => setNewProject(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
-                />
+                  </div>
+                </form>
               </div>
-              <div className="mb-6">
-                <input
-                  type="date"
-                  placeholder="Due Date"
-                  value={newDueDate}
-                  onChange={(e) => setNewDueDate(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
-                />
+            </div>
+          </Modal>
+          {projectToDelete !== null && (
+            <Modal isOpen={true} onClose={() => setProjectToDelete(null)}>
+              <div className="text-center">
+                <h1 className="text-xl mb-4">
+                  Are you sure you want to delete this project?
+                </h1>
+                <div className="flex items-center justify-center gap-4 cursor-pointer">
+                  <p onClick={() => setProjectToDelete(null)}>Cancel</p>
+                  <span
+                    onClick={() => {
+                      confirmDeleteProject();
+                      setProjectToDelete(null);
+                    }}
+                    className="bg-red-800 text-white text-sm px-4 py-2 rounded-2xl hover:bg-red-900 cursor-pointer"
+                  >
+                    Delete
+                  </span>
+                </div>
               </div>
-              <div className="mb-6">
-                <select
-                  value={newStatus}
-                  onChange={(e) =>
-                    setNewStatus(
-                      e.target.value as
-                        | "Ongoing"
-                        | "Delay"
-                        | "Completed"
-                        | "At Risk"
-                    )
-                  }
-                  className="w-full p-3 border border-gray-300 rounded-full drop-shadow-xl"
-                >
-                  {statusOptions.map((status) => (
-                    <option key={status} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="flex justify-end p-4 gap-4">
-                <button
-                  type="submit"
-                  className="bg-green-500 text-white px-4 py-2 rounded-full text-sm ml-2"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  onClick={handleCancelEdit}
-                  className="bg-red-500 text-white px-4 py-2 rounded-full text-sm"
-                >
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            </Modal>
+          )}
         </div>
-      </Modal>
-    </div>
+      )}
+    </Layout>
   );
 };
 
 const ProjectPage: React.FC = () => {
-  return (
-    <Layout>
-      <ProjectCard />
-    </Layout>
-  );
+  return <ProjectCard />;
 };
 
 export default ProjectPage;

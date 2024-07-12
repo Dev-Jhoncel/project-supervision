@@ -6,7 +6,7 @@ import Modal from "@/components/generalModal/Modal";
 import Layout from "@/components/Layout";
 import { useRouter } from "next/navigation";
 
-const Modulist = () => {
+const Modulelist = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState("");
   const [modules, setModules] = useState([
@@ -58,6 +58,7 @@ const Modulist = () => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
+  const [moduleToDelete, setModuleToDelete] = useState<number | null>(null); // State for module to delete
 
   const handleBack = () => {
     router.back();
@@ -119,8 +120,15 @@ const Modulist = () => {
   };
 
   const deleteModule = (index: number) => {
-    const updatedModules = modules.filter((_, i) => i !== index);
-    setModules(updatedModules);
+    setModuleToDelete(index); // Set the index of the module to delete
+  };
+
+  const confirmDeleteModule = () => {
+    if (moduleToDelete !== null) {
+      const updatedModules = modules.filter((_, i) => i !== moduleToDelete);
+      setModules(updatedModules);
+      setModuleToDelete(null); // Clear the module to delete after deletion
+    }
   };
 
   const editModule = (index: number) => {
@@ -340,9 +348,31 @@ const Modulist = () => {
             </div>
           </div>
         </Modal>
+
+        {moduleToDelete !== null && (
+          <Modal isOpen={true} onClose={() => setModuleToDelete(null)}>
+            <div className="text-center">
+              <h1 className="text-xl mb-4">
+                Are you sure you want to delete this module?
+              </h1>
+              <div className="flex items-center justify-center gap-4 cursor-pointer">
+                <p onClick={() => setModuleToDelete(null)}>Cancel</p>
+                <span
+                  onClick={() => {
+                    confirmDeleteModule();
+                    setModuleToDelete(null);
+                  }}
+                  className="bg-red-800 text-white text-sm px-4 py-2 rounded-2xl hover:bg-red-900 cursor-pointer"
+                >
+                  Delete
+                </span>
+              </div>
+            </div>
+          </Modal>
+        )}
       </div>
     </Layout>
   );
 };
 
-export default Modulist;
+export default Modulelist;
