@@ -5,6 +5,35 @@ import "../login/login.css";
 import { useRouter } from "next/navigation";
 import Button from "@/components/buttons/button";
 
+const validatePassword = (password) => {
+  const minLength = 8;
+  const hasNumber = /\d/;
+  const hasLetter = /[a-zA-Z]/;
+  const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+  if (!password.trim()) {
+    return "Please enter your password.";
+  }
+
+  if (password.length < minLength) {
+    return `Password must be at least ${minLength} characters long.`;
+  }
+
+  if (!hasNumber.test(password)) {
+    return "Password must contain at least one number.";
+  }
+
+  if (!hasLetter.test(password)) {
+    return "Password must contain at least one letter.";
+  }
+
+  if (!hasSpecialChar.test(password)) {
+    return "Password must contain at least one special character.";
+  }
+
+  return null;
+};
+
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,23 +46,23 @@ const Login: React.FC = () => {
       return;
     }
 
-    if (!password.trim()) {
-      setErrorMessage("Please enter your password.");
+    const passwordError = validatePassword(password);
+    if (passwordError) {
+      setErrorMessage(passwordError);
       return;
     }
 
     setErrorMessage("");
+    // Proceed with login logic
   };
 
   const handleForgotPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-
-    router.push("/forgotpass");
+    router.push("/forgotPass");
   };
 
   const handleSignup = (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
-
     router.push("/signUp");
   };
 
@@ -53,14 +82,17 @@ const Login: React.FC = () => {
       </div>
 
       <div className="login-form absolute top-40 left-3/4 z-40 w-2/4 h-1/5">
-        <h1 className="mb-7 text-4xl text-white font-bold">
+        <h1 className="mb-7 text-3xl text-white font-bold">
           Welcome to <span>Project Supervision</span>
         </h1>
         <form
-          onSubmit={handleLogin}
-          className="flex flex-col w-4/5  p-10 rounded-lg bg-white gap-6"
+          onSubmit={(event) => {
+            event.preventDefault();
+            handleLogin();
+          }}
+          className="flex flex-col w-4/5 p-10 rounded-lg bg-white gap-6"
         >
-          <h1 className="text-4xl font-bold self-center">Log In</h1>
+          <h1 className="text-3xl font-bold self-center -mt-3">Log In</h1>
           <label htmlFor="email" className="pl-2 font-medium">
             Email
           </label>
@@ -70,7 +102,7 @@ const Login: React.FC = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="username@gmail.com"
-            className="p-6 rounded-md border border-red-900"
+            className="p-6 rounded-md border border-gray-300 -mt-4"
           />
           <label htmlFor="password" className="pl-2 font-medium">
             Password
@@ -81,7 +113,7 @@ const Login: React.FC = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Enter your password"
-            className="p-6 rounded-md border border-red-900"
+            className="p-6 rounded-md border border-gray-300 -mt-4"
           />
 
           {errorMessage && (

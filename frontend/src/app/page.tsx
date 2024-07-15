@@ -7,7 +7,7 @@ import UserProfile from "./(pages)/userprofile/page.";
 export default function Page() {
   return (
     <div>
-      <UserProfile />
+      <Login />
     </div>
   );
 }

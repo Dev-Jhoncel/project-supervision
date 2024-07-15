@@ -24,14 +24,14 @@ const OtpPassword = () => {
       </div>
 
       <div className="login-form absolute top-40 left-3/4 w-max h-1/5">
-        <h1 className="mb-7 text-4xl text-white font-bold">
+        <h1 className="mb-7 text-3xl text-white font-bold">
           Welcome to <span>Project Supervision</span>
         </h1>
         <form
           onSubmit={handleLogin}
           className="flex flex-col w-full p-10 rounded-lg bg-white gap-6"
         >
-          <h1 className="text-3xl font-bold self-center p-2">
+          <h1 className="text-2xl font-bold self-center p-2">
             Confirmation Code
           </h1>
           <h2 className="text-sm text-gray 500 text-center">
@@ -67,7 +67,7 @@ const OtpPassword = () => {
           <div className="text-center">
             <h2 className="text-l text-gray-500">
               Haven’t received a code?{" "}
-              <span className="text-red-900 underline hover:opacity-90">
+              <span className="text-red-900 underline hover:opacity-90 cursor-pointerc">
                 Resend
               </span>
             </h2>

@@ -27,14 +27,14 @@ const ForgotPassword = () => {
       </div>
 
       <div className="login-form absolute top-40 left-3/4 z-40 w-2/4 h-1/5">
-        <h1 className="mb-7 text-4xl text-white font-bold">
+        <h1 className="mb-7 text-3xl text-white font-bold">
           Welcome to <span>Project Supervision</span>
         </h1>
         <form
           onSubmit={handleLogin}
           className="flex flex-col w-4/5  p-10 rounded-lg bg-white gap-6"
         >
-          <h1 className="text-4xl font-bold self-center">Forgot Password?</h1>
+          <h1 className="text-2xl font-bold self-center">Forgot Password?</h1>
           <h2 className="text-sm text-gray 500 text-center">
             Enter the email address registered with your account. We'll send you
             a link to reset your password.
@@ -49,7 +49,7 @@ const ForgotPassword = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder="username@gmail.com"
-            className="p-6 rounded-md border border-red-900"
+            className="p-6 rounded-md border border-gray-300 -mt-4"
           />
           <Button title="Submit" onClick={handleLogin} />
         </form>
