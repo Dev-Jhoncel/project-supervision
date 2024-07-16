@@ -1,28 +1,67 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDeveloperDto } from './dto/create-developer.dto';
 import { UpdateDeveloperDto } from './dto/update-developer.dto';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class DeveloperService {
+  constructor(private readonly prisma: PrismaService) {}
+
   create(createDeveloperDto: CreateDeveloperDto) {
     console.log(createDeveloperDto);
-    return 'This action adds a new developer';
+    return this.prisma.developer.create({
+      data: {
+        first_name: createDeveloperDto.first_name,
+        middle_name: createDeveloperDto.middle_name,
+        last_name: createDeveloperDto.last_name,
+        suffix: createDeveloperDto.suffix,
+        email: createDeveloperDto.email,
+        mobile_no: createDeveloperDto.mobile_no,
+        role: createDeveloperDto.role,
+        isActive: createDeveloperDto.isActive,
+      },
+    });
   }
 
   findAll() {
-    return `This action returns all developer`;
+    return this.prisma.developer.findMany();
+  }
+
+  findTopDevelopers(skips: number, takes: number) {
+    return this.prisma.developer.findMany({
+      where: { isActive: 1 },
+      skip: +skips,
+      take: +takes,
+      orderBy: {
+        points: 'desc',
+      },
+    });
+  }
+
+  findAvailableDevelopers(skips: number, takes: number) {
+    return this.prisma.developer.findMany({
+      where: { isAvailable: 1, isActive: 1 },
+      skip: +skips,
+      take: +takes,
+      orderBy: {
+        points: 'desc',
+      },
+    });
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} developer`;
+    return this.prisma.developer.findUnique({ where: { id: id } });
   }
 
   update(id: number, updateDeveloperDto: UpdateDeveloperDto) {
     console.log(updateDeveloperDto);
-    return `This action updates a #${id} developer`;
+    return this.prisma.developer.update({
+      where: { id: id },
+      data: updateDeveloperDto,
+    });
   }
 
   remove(id: number) {
-    return `This action removes a #${id} developer`;
+    return this.prisma.developer.delete({ where: { id: id } });
   }
 }

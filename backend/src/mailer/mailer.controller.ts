@@ -11,7 +11,7 @@ export class MailerController {
     await this.mailerService.sendMail({
       to: body.email,
       from: `${process.env.MAIL_FROM}`,
-      subject: 'Notification from Porject Supervision!',
+      subject: 'Notification from Project Supervision!',
       text: body.message,
     });
   }

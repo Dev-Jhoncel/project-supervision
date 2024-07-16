@@ -11,6 +11,10 @@ import { TaskModule } from './task/task.module';
 import { DeveloperModule } from './developer/developer.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from '@nestjs/config';
+import { TechStackModule } from './tech_stack/tech_stack.module';
+import { SkillSetsModule } from './skill_sets/skill_sets.module';
+import { TeamModule } from './team/team.module';
+import { GroupingsModule } from './groupings/groupings.module';
 
 @Module({
   imports: [
@@ -24,6 +28,10 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
       envFilePath: '.env',
     }),
+    TechStackModule,
+    SkillSetsModule,
+    TeamModule,
+    GroupingsModule,
   ],
   controllers: [AppController, AuthController],
   providers: [AppService, AuthService, PrismaService],
