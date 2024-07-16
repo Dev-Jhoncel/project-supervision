@@ -1,22 +1,26 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { RxDashboard } from "react-icons/rx";
 import { GoPeople, GoProject, GoTasklist } from "react-icons/go";
 
 const Sidebar = () => {
   const router = useRouter();
-  const [activeLink, setActiveLink] = useState("");
+  const activePath = usePathname();
 
-  // Function to handle navigation and setActiveLink
-  const handleClick = (page: string) => {
-    setActiveLink(page); // First, set the active link
-    router.push(`/${page}`); // Then, navigate to the page
+  const handleNavigation = (path) => {
+    router.push(path);
+  };
+
+  const isActive = (path) => {
+    return activePath.startsWith(path)
+      ? "bg-blue-950 border-b-2 md:border-none text-white p-1 md:bg-white md:text-red-900 md:rounded-full md:py-2"
+      : "text-white font-regular";
   };
 
   return (
-    <div className="w-64 h-screen bg-red-900 flex flex-col items-center p-3">
+    <div className="sticky top-0 w-64 h-screen bg-red-900 flex flex-col items-center p-3">
       <div className="logo">
         <Image
           src="/projectSupervision.png"
@@ -29,52 +33,40 @@ const Sidebar = () => {
         </h2>
       </div>
 
-      <nav className="flex flex-col gap-6 p-20">
-        <button
-          className={`flex items-center px-5 py-4 text-md font-medium hover:font-bold cursor-pointer ${
-            activeLink === "dashboard"
-              ? "bg-white text-red-900"
-              : "text-white hover:text-red-200"
-          } rounded-br-3xl rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl`}
-          onClick={() => handleClick("dashboard")}
+      <div className="mt-4 p-2 flex flex-col gap-10 w-full">
+        <div
+          className={`cursor-pointer flex items-center gap-4 py-2 px-4 hover:bg-white hover:text-red-900 hover:rounded-full ${isActive(
+            "/dashboard"
+          )}`}
+          onClick={() => handleNavigation("/dashboard")}
         >
-          <RxDashboard className="w-6 h-6 mr-2" />
-          Dashboard
-        </button>
-        <button
-          className={`flex items-center px-5 py-4 text-md font-medium hover:font-bold cursor-pointer ${
-            activeLink === "developers"
-              ? "bg-white text-red-900"
-              : "text-white hover:text-red-200"
-          } rounded-br-3xl rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl`}
-          onClick={() => handleClick("developers")}
+          <RxDashboard /> Dashboard
+        </div>
+        <div
+          className={`cursor-pointer flex items-center gap-4 py-2 px-4 hover:bg-white hover:text-red-900 hover:rounded-full ${isActive(
+            "/developers"
+          )}`}
+          onClick={() => handleNavigation("/developers")}
         >
-          <GoPeople className="w-6 h-6 mr-2" />
-          Developers
-        </button>
-        <button
-          className={`flex items-center px-5 py-4 text-md font-medium hover:font-bold cursor-pointer ${
-            activeLink === "projects"
-              ? "bg-white text-red-900"
-              : "text-white hover:text-red-200"
-          } rounded-br-3xl rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl`}
-          onClick={() => handleClick("projects")}
+          <GoPeople /> Developer
+        </div>
+        <div
+          className={`cursor-pointer flex items-center gap-4 py-2 px-4 hover:bg-white hover:text-red-900 hover:rounded-full ${isActive(
+            "/projects"
+          )}`}
+          onClick={() => handleNavigation("/projects")}
         >
-          <GoProject className="w-6 h-6 mr-2" />
-          Projects
-        </button>
-        <button
-          className={`flex items-center px-5 py-4 text-md font-medium hover:font-bold cursor-pointer ${
-            activeLink === "tasks"
-              ? "bg-white text-red-900"
-              : "text-white hover:text-red-200"
-          } rounded-br-3xl rounded-tl-3xl rounded-tr-3xl rounded-bl-3xl`}
-          onClick={() => handleClick("tasks")}
+          <GoProject /> Project
+        </div>
+        <div
+          className={`cursor-pointer flex items-center gap-4 py-2 px-4 hover:bg-white hover:text-red-900 hover:rounded-full ${isActive(
+            "/tasks"
+          )}`}
+          onClick={() => handleNavigation("/tasks")}
         >
-          <GoTasklist className="w-6 h-6 mr-2" />
-          Tasks
-        </button>
-      </nav>
+          <GoTasklist /> Task
+        </div>
+      </div>
     </div>
   );
 };

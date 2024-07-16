@@ -5,37 +5,17 @@ import Image from "next/image";
 import Button from "@/components/buttons/button";
 import { useRouter } from "next/navigation";
 import "../login/login.css";
-import sanitizeInput from "@/utils/CheckingFunction/CheckIFNumber";
-import { SendOtp } from "@/utils/OtpFunction/SendOTP";
-import { ValidateOTP } from "@/utils/OtpFunction/ValidateOTP";
+import sanitizeInput from "@/utils/CheckingFunc/CheckIFNumber";
+import { SendOtp } from "@/utils/OtpFunc/SendOTP";
+import { ValidateOTP } from "@/utils/OtpFunc/ValidateOTP";
 import toast from "react-hot-toast";
 import jwt from "jsonwebtoken";
 
 const OtpPassword: React.FC = () => {
   const router = useRouter();
+
   //Send otp to clinet mobile phone.
   useEffect(() => {
-    const handleLogin = async () => {
-      //decrypt jwt token
-      const token = localStorage.getItem("token");
-      console.log(token);
-      const parseToken = token ? JSON.parse(token) : null;
-      if (parseToken === null) {
-        toast.error("Token was Empty!");
-        handleRedirect();
-      } else {
-        //get mobile number then send the otp
-        const decodeToken = jwt.decode(parseToken);
-        if (decodeToken) {
-          const mobile = decodeToken?.mobile_no;
-          if (decodeToken !== null) {
-            console.log();
-            const { code, message, error } = await SendOtp(mobile);
-            if (error) toast.error("Unable to Send OTP!");
-          }
-        }
-      }
-    };
     handleLogin();
   }, []);
 
@@ -49,7 +29,29 @@ const OtpPassword: React.FC = () => {
   const [boxFour, setBoxFourValue] = React.useState("");
   const [boxFive, setBoxFiveValue] = React.useState("");
   const [boxSix, setBoxSixValue] = React.useState("");
-  const [myData, setMyData] = useState<any | null>(null);
+  const [userMobile, setuserMobile] = useState<string>("");
+
+  const handleLogin = async () => {
+    //decrypt jwt token
+    const token = localStorage.getItem("token");
+    console.log(token);
+    const parseToken = token ? JSON.parse(token) : null;
+    if (parseToken === null) {
+      toast.error("Token was Empty!");
+      handleRedirect();
+    } else {
+      //get mobile number then send the otp
+      const decodeToken = jwt.decode(parseToken);
+      if (decodeToken) {
+        const mobile: string = decodeToken.mobile_no;
+        setuserMobile(mobile);
+        if (decodeToken !== null) {
+          const { code, message, error } = await SendOtp(mobile);
+          if (error) toast.error("Unable to Send OTP!");
+        }
+      }
+    }
+  };
 
   const handleOnChangeOne = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {
@@ -104,7 +106,8 @@ const OtpPassword: React.FC = () => {
 
   const handleSubmit = async () => {
     const otpCode = `${boxOne}${boxTwo}${boxThree}${boxFour}${boxFive}${boxSix}`;
-    const { code, message, error } = await ValidateOTP("09959280777", otpCode);
+    console.log(`User Mobile: ${userMobile}`);
+    const { code, message, error } = await ValidateOTP(userMobile, otpCode);
     if (error) toast.error(message);
     if (+code === 1) {
       router.push("/dashboard");
@@ -129,12 +132,15 @@ const OtpPassword: React.FC = () => {
       </div>
 
       <div className="login-form absolute top-40 left-3/4 w-max h-1/5">
-        <h1 className="mb-7 text-4xl text-white font-bold">
+        <h1 className="mb-7 text-3xl text-white font-bold">
           Welcome to <span>Project Supervision</span>
         </h1>
-        <form className="flex flex-col w-full p-10 rounded-lg bg-white gap-6">
-          <h1 className="text-4xl font-bold self-center p-2">
-            One Time Password
+        <form
+          onSubmit={handleLogin}
+          className="flex flex-col w-full p-10 rounded-lg bg-white gap-6"
+        >
+          <h1 className="text-3xl font-bold self-center p-2">
+            Confirmation Code
           </h1>
           <h2 className="text-sm text-gray 500 text-center">
             We’ve sent an sms to mobile number, please enter the 6-digit code

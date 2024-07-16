@@ -1,27 +1,44 @@
 "use client";
-import React from "react";
+import React, { use, useState } from "react";
 import { MdAddCircleOutline } from "react-icons/md";
 
 const ModalButton: React.FC<{ title: string }> = ({ title }) => {
   return (
-    <button className="w-full bg-red-900 text-white py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+    <button
+      type="submit"
+      className="w-full bg-red-900 text-white py-2 rounded-lg hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+    >
       {title}
     </button>
   );
 };
 
 const CreateProject: React.FC = () => {
+  const [projectName, setProjectName] = useState("");
+  const [dueDate, setDueDate] = useState("");
+  const [status, setStatus] = useState("");
+
+  const addNewProject = () => {
+    const data = {
+      description: projectName,
+      due_date: dueDate,
+      status: status,
+    };
+    console.log(addNewProject);
+  };
+
   return (
     <div className="flex justify-center items-center min-h-screen bg-gray-100">
       <div className="bg-white rounded-lg shadow-lg p-8 w-96 border-t-4 border-red-900 h-96">
         <h2 className="flex justify-center text-xl font-bold mb-6 items-center">
           Create New Project
         </h2>
-        <form>
+        <form onSubmit={addNewProject}>
           <div className="mb-10">
             <input
               type="text"
               placeholder="Project Name"
+              onChange={(e) => setProjectName(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
             />
           </div>
@@ -29,6 +46,7 @@ const CreateProject: React.FC = () => {
             <input
               type="text"
               placeholder="Modules"
+              onChange={(e) => setStatus(e.target.value)}
               className="w-full p-2 pr-10 border border-gray-300 rounded-full drop-shadow-xl"
             />
             <button
@@ -42,6 +60,7 @@ const CreateProject: React.FC = () => {
             <input
               type="date"
               placeholder="Due"
+              onChange={(e) => setDueDate(e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
             />
           </div>
