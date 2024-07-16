@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Version,
+  HttpException,
+  HttpStatus,
+  Put,
+} from '@nestjs/common';
+import CUSTOM_RESPONSE from 'src/response/custom-response/CustomResponse';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
@@ -8,27 +21,97 @@ export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
   @Post()
-  create(@Body() createProjectDto: CreateProjectDto) {
-    return this.projectsService.create(createProjectDto);
+  @Version('1')
+  async create(@Body() createProjectDto: CreateProjectDto) {
+    try {
+      const response = await this.projectsService.create(createProjectDto);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      //Unpredicted Error
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
-  @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  @Get('active-projects/:id')
+  @Version('1')
+  async findAll(@Param('id') id: number[]) {
+    try {
+      const response = await this.projectsService.findAll(+id);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      //Unpredicted Error
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get(':id')
+  @Version('1')
   findOne(@Param('id') id: string) {
-    return this.projectsService.findOne(+id);
+    try {
+      const response = this.projectsService.findOne(+id);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Patch(':id')
+  @Version('1')
   update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
+    try {
+      const response = this.projectsService.update(+id, updateProjectDto);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Delete(':id')
+  @Version('1')
   remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+    try {
+      const response = this.projectsService.remove(+id);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Put(':id')
+  @Version('1')
+  updateStatus(
+    @Param('id') id: string,
+    @Body() updateProjectDto: CreateProjectDto,
+  ) {
+    try {
+      const response = this.projectsService.updateStatus(+id, updateProjectDto);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 }

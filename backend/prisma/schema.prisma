@@ -19,39 +19,36 @@ model developer {
   points        Int          @default(0)
   email         String       @default("")
   mobile_no     String       @default("")
-  team          team?        @relation(fields: [team_id], references: [id])
   isAvailable   Int          @default(0)
   isActive      Int
-  projects      projects     @relation(fields: [projectsId], references: [id])
   skill_sets    skill_sets[]
   task          task[]
-  projectsId    Int
+  groupings     groupings?   @relation(fields: [groupingsId], references: [id])
+  groupingsId   Int?
 
   @@index([team_id], map: "developer_teamId_fkey")
 }
 
 model projects {
-  id          Int         @id @default(autoincrement())
-  description String      @default("")
-  status_id   Int
-  start_date  DateTime?
-  end_date    DateTime?
-  created_at  DateTime    @default(now())
-  updated_at  DateTime    @default(now())
-  team_id     Int?
-  user_id     Int?
-  status      status      @relation(fields: [status_id], references: [id])
-  team        team?       @relation(fields: [team_id], references: [id])
-  user        user?       @relation(fields: [user_id], references: [id])
-  isActive    Int         @default(1)
-  developer   developer[]
+  id         Int       @id @default(autoincrement())
+  project    String    @default("")
+  due_date   DateTime? @db.Date
+  created_at DateTime  @default(now())
+  updated_at DateTime  @default(now())
+  team_id    Int?
+  user_id    Int?
+  status     String    @default("")
+  team       team?     @relation(fields: [team_id], references: [id])
+  user       user?     @relation(fields: [user_id], references: [id])
+  isActive   Int       @default(1)
+  task       task?     @relation(fields: [taskId], references: [id])
+  taskId     Int?
 
-  @@index([status_id], map: "projects_status_id_fkey")
   @@index([team_id], map: "projects_team_id_fkey")
   @@index([user_id], map: "projects_userId_fkey")
 }
 
-model skill {
+model tech_stack {
   id          Int          @id @default(autoincrement())
   title       String       @default("")
   description String       @default("")
@@ -67,43 +64,50 @@ model skill_sets {
   updated_at   DateTime   @default(now())
   developer_id Int?
   developer    developer? @relation(fields: [developer_id], references: [id])
-  skill        skill      @relation(fields: [skill_id], references: [id])
+  skill        tech_stack @relation(fields: [skill_id], references: [id])
 
   @@index([developer_id], map: "skill_sets_developer_id_fkey")
   @@index([skill_id], map: "skill_sets_skill_id_fkey")
 }
 
-model status {
-  id         Int        @id @default(autoincrement())
-  title      String     @default("")
-  created_at DateTime   @default(now())
-  updated_at DateTime   @default(now())
-  projects   projects[]
-}
-
 model task {
-  id             Int       @id @default(autoincrement())
-  decription     String    @default("")
-  priority_level String    @default("")
+  id             Int        @id @default(autoincrement())
+  decription     String     @default("")
+  priority_level String     @default("")
   begin_date     DateTime?
   end_date       DateTime?
-  created_at     DateTime  @default(now())
-  updated_at     DateTime  @default(now())
+  created_at     DateTime   @default(now())
+  updated_at     DateTime   @default(now())
   user_id        Int?
-  user           user?     @relation(fields: [user_id], references: [id])
-  developer      developer @relation(fields: [developerId], references: [id])
+  user           user?      @relation(fields: [user_id], references: [id])
+  developer      developer  @relation(fields: [developerId], references: [id])
   developerId    Int
+  projectId      Int
+  projects       projects[]
 
   @@index([user_id], map: "task_userId_fkey")
 }
 
 model team {
+  id           Int        @id @default(autoincrement())
+  description  String     @default("")
+  created_at   DateTime   @default(now())
+  updated_at   DateTime   @default(now())
+  developer_id Int
+  projects_id  Int
+  projects     projects[]
+  groupings    groupings? @relation(fields: [groupingsId], references: [id])
+  groupingsId  Int?
+}
+
+model groupings {
   id          Int         @id @default(autoincrement())
-  description String      @default("")
+  developerId Int
   created_at  DateTime    @default(now())
   updated_at  DateTime    @default(now())
+  teamId      Int
   developer   developer[]
-  projects    projects[]
+  team        team[]
 }
 
 model user {
