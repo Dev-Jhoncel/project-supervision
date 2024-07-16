@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useEffect, useState } from "react";
 import { FaProjectDiagram, FaClipboardList } from "react-icons/fa";
 import { GiSandsOfTime } from "react-icons/gi";
@@ -13,6 +12,7 @@ import { IStatusEnum } from "@/interfaces/IStatusEnum";
 import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
 import { Project } from "@/interfaces/IProjects";
 import { selectStatusEnum } from "@/utils/StatusEnumFunc/SelectStatus";
+import Loader from "@/components/loader/Loader";
 
 const Dashboard: React.FC = () => {
   const [totalActiveProject, setTotalActiveprojects] = useState(0);
@@ -77,47 +77,55 @@ const Dashboard: React.FC = () => {
     } catch (error) {
       console.log(error);
       setLoading(false);
+    } finally {
+      setLoading(false);
     }
   }, [loading]);
 
   return (
     <Layout>
-      <div className="p-6 flex flex-col gap-8 mr-8">
-        <div>
-          <h1 className="font-bold text-2xl">Dashboard</h1>
+      {loading ? (
+        <div className="flex items-center justify-center h-screen">
+          <Loader />
         </div>
-
-        <div className="grid grid-cols-3 gap-4">
-          <Box
-            icon={<FaProjectDiagram />}
-            title="Projects"
-            value={totalActiveProject.toString()}
-            color="green"
-          />
-          <Box
-            icon={<FaClipboardList />}
-            title="Delayed Projects"
-            value={totalDelayedProject}
-            color="yellow"
-          />
-          <Box
-            icon={<GiSandsOfTime />}
-            title="At Risk Projects"
-            value={totalAtRiskPorject}
-            color="red"
-          />
-        </div>
-
-        <div className="flex flex-col gap-6">
-          <div className="grid grid-cols-2 w-full gap-4">
-            <TopDevelopers />
-            <AllDeveloper />
+      ) : (
+        <div className="p-6 flex flex-col gap-8 mr-8">
+          <div>
+            <h1 className="font-bold text-2xl">Dashboard</h1>
           </div>
-          <div className="w-full">
-            <ProjectList project={allActiveProject} />
+
+          <div className="grid grid-cols-3 gap-4">
+            <Box
+              icon={<FaProjectDiagram />}
+              title="Projects"
+              value={`${totalActiveProject}`}
+              color="green"
+            />
+            <Box
+              icon={<FaClipboardList />}
+              title="Delayed Projects"
+              value={`${totalDelayedProject}`}
+              color="yellow"
+            />
+            <Box
+              icon={<GiSandsOfTime />}
+              title="At Risk Projects"
+              value={`${totalAtRiskPorject}`}
+              color="red"
+            />
+          </div>
+
+          <div className="flex flex-col gap-6">
+            <div className="grid grid-cols-2 w-full gap-4">
+              <TopDevelopers />
+              <AllDeveloper />
+            </div>
+            <div className="w-full">
+              <ProjectList project={allActiveProject} />
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </Layout>
   );
 };
