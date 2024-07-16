@@ -3,22 +3,14 @@ import React, { useState } from "react";
 import Image from "next/image";
 import Button from "@/components/buttons/button";
 import "../login/login.css";
-import { SendEmail } from "@/utils/SendEmailFunction/SendEmail";
+import { sendEmail } from "@/utils/SendEmailFunc/SendEmail";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
 
   const handleLogin = () => {
     console.log("Forgot password request submitted with email:", email);
-  };
-
-  const handleSubmit = () => {
-    const data = {
-      to: "jhoncel.cadiena@mlhuillier.com",
-      subject: "TEST",
-      text: "Test",
-      html: "<h1>Hello Test </h1>",
-    };
+    if (email) sendEmail(email, "You forgot your Password");
   };
 
   return (

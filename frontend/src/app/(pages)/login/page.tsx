@@ -12,6 +12,7 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -81,10 +82,7 @@ const Login: React.FC = () => {
         <h1 className="mb-7 text-4xl text-white font-bold">
           Welcome to <span>Project Supervision</span>
         </h1>
-        <form
-          onSubmit={handleLogin}
-          className="flex flex-col w-4/5  p-10 rounded-lg bg-white gap-6"
-        >
+        <form className="flex flex-col w-4/5  p-10 rounded-lg bg-white gap-6">
           <h1 className="text-4xl font-bold self-center">Log In</h1>
           <label htmlFor="email" className="pl-2 font-medium">
             Email
