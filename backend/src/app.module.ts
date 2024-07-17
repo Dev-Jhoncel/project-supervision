@@ -12,7 +12,6 @@ import { DeveloperModule } from './developer/developer.module';
 import { MailerModule } from './mailer/mailer.module';
 import { ConfigModule } from '@nestjs/config';
 import { TechStackModule } from './tech_stack/tech_stack.module';
-import { SkillSetsModule } from './skill_sets/skill_sets.module';
 import { TeamModule } from './team/team.module';
 import { GroupingsModule } from './groupings/groupings.module';
 
@@ -29,7 +28,6 @@ import { GroupingsModule } from './groupings/groupings.module';
       envFilePath: '.env',
     }),
     TechStackModule,
-    SkillSetsModule,
     TeamModule,
     GroupingsModule,
   ],

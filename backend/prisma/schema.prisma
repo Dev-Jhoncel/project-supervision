@@ -8,23 +8,22 @@ datasource db {
 }
 
 model developer {
-  id            Int          @id @default(autoincrement())
-  first_name    String       @default("")
-  middle_name   String       @default("")
-  last_name     String       @default("")
-  suffix        String       @default("")
-  role          String       @default("")
-  team_id       Int?
-  skill_sets_id Int?
-  points        Int          @default(0)
-  email         String       @default("")
-  mobile_no     String       @default("")
-  isAvailable   Int          @default(0)
-  isActive      Int
-  skill_sets    skill_sets[]
-  task          task[]
-  groupings     groupings?   @relation(fields: [groupingsId], references: [id])
-  groupingsId   Int?
+  id          Int          @id @default(autoincrement())
+  first_name  String       @default("")
+  middle_name String       @default("")
+  last_name   String       @default("")
+  suffix      String       @default("")
+  role        String       @default("")
+  team_id     Int?
+  points      Int          @default(0)
+  email       String       @default("")
+  mobile_no   String       @default("")
+  isAvailable Int          @default(0)
+  isActive    Int
+  task        task[]
+  groupings   groupings?   @relation(fields: [groupingsId], references: [id])
+  groupingsId Int?
+  tech_stack  tech_stack[]
 
   @@index([team_id], map: "developer_teamId_fkey")
 }
@@ -49,31 +48,20 @@ model projects {
 }
 
 model tech_stack {
-  id          Int          @id @default(autoincrement())
-  title       String       @default("")
-  description String       @default("")
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @default(now())
-  skill_sets  skill_sets[]
-}
-
-model skill_sets {
-  id           Int        @id @default(autoincrement())
-  skill_id     Int
-  created_at   DateTime   @default(now())
-  updated_at   DateTime   @default(now())
-  developer_id Int?
-  developer    developer? @relation(fields: [developer_id], references: [id])
-  skill        tech_stack @relation(fields: [skill_id], references: [id])
-
-  @@index([developer_id], map: "skill_sets_developer_id_fkey")
-  @@index([skill_id], map: "skill_sets_skill_id_fkey")
+  id          Int        @id @default(autoincrement())
+  title       String     @default("")
+  description String     @default("")
+  developerId Int
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @default(now())
+  developer   developer? @relation(fields: [developerId], references: [id])
 }
 
 model task {
   id             Int        @id @default(autoincrement())
   decription     String     @default("")
   priority_level String     @default("")
+  indicator      Int        @default(1)
   begin_date     DateTime?
   end_date       DateTime?
   created_at     DateTime   @default(now())

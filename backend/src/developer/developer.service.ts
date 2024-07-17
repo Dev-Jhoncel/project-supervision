@@ -50,7 +50,10 @@ export class DeveloperService {
   }
 
   findOne(id: number) {
-    return this.prisma.developer.findUnique({ where: { id: id } });
+    return this.prisma.developer.findUnique({
+      where: { id: id },
+      include: { tech_stack: true },
+    });
   }
 
   update(id: number, updateDeveloperDto: UpdateDeveloperDto) {

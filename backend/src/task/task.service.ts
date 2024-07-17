@@ -32,6 +32,13 @@ export class TaskService {
     });
   }
 
+  async findOneWithTask(id: number) {
+    return await this.prisma.task.findMany({
+      where: { developerId: id },
+      include: { developer: true },
+    });
+  }
+
   async remove(id: number) {
     return await this.prisma.task.delete({
       where: { id: id },
