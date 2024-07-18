@@ -4,4 +4,5 @@ export interface UserDetails {
   middle_name?: string;
   last_name?: string;
   email: string;
+  mobileno: number;
 }

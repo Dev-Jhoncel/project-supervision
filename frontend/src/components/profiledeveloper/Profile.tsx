@@ -8,7 +8,7 @@ interface Developer {
   profilePicture: string;
   ratings: number;
   skills: string[];
-  projects: { name: string; status: string }[];
+  projects?: { name: string; status: string }[];
 }
 
 interface ProfileProps {

@@ -12,8 +12,8 @@ export class TaskService {
     return this.prisma.task.create({ data: createTaskDto });
   }
 
-  async findAll() {
-    return this.prisma.task.findMany();
+  async findAll(id: number) {
+    return this.prisma.task.findMany({ where: { user_id: id } });
   }
 
   async findOne(id: number) {
@@ -29,6 +29,23 @@ export class TaskService {
         where: { id: id },
         data: updateTaskDto,
       });
+    });
+  }
+
+  async put(id: number, updateTaskDto: UpdateTaskDto) {
+    console.log(updateTaskDto);
+    return await this.prisma.$transaction(async (transaction) => {
+      return await transaction.task.update({
+        where: { id: id },
+        data: updateTaskDto,
+      });
+    });
+  }
+
+  async findOneWithTask(id: number) {
+    return await this.prisma.task.findMany({
+      where: { developerId: id },
+      include: { developer: true },
     });
   }
 

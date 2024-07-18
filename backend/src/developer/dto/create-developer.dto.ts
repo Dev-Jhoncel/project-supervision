@@ -8,4 +8,5 @@ export class CreateDeveloperDto {
   email: string;
   isActive: number;
   mobile_no: string;
+  isAvailable: number;
 }

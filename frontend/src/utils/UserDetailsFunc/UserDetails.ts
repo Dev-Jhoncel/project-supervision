@@ -16,6 +16,7 @@ export const getUserDetails = () => {
       middle_name: decodeToken?.middle_name,
       last_name: decodeToken?.last_name,
       email: decodeToken?.email,
+      mobileno: decodeToken?.mobile_no,
     };
     return data;
   } catch (error) {

@@ -54,9 +54,10 @@ export class ProjectsController {
 
   @Get(':id')
   @Version('1')
-  findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string) {
     try {
-      const response = this.projectsService.findOne(+id);
+      const response = await this.projectsService.findOne(+id);
+      console.log(response);
       return CUSTOM_RESPONSE.getCustomResponse(
         HttpStatus.OK,
         'Success',

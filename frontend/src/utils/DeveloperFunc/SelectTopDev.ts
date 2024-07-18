@@ -19,6 +19,6 @@ export const getTopDevelopers = (id: number, skips: number, takes: number) => {
       console.error(errorResult);
       return errorResult;
     });
-
+  console.log(result);
   return result;
 };

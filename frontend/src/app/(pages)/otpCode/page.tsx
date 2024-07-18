@@ -10,19 +10,45 @@ import { SendOtp } from "@/utils/OtpFunc/SendOTP";
 import { ValidateOTP } from "@/utils/OtpFunc/ValidateOTP";
 import toast from "react-hot-toast";
 import jwt from "jsonwebtoken";
+import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
+
+const handleLogin = async () => {
+  //decrypt jwt token
+  try {
+    const token = localStorage.getItem("token");
+    console.log(token);
+    const parseToken = token ? JSON.parse(token) : null;
+    if (parseToken === null) {
+      toast.error("Token was Empty!");
+      throw new Error("Token was Empty!");
+    } else {
+      //get mobile number then send the otp
+      const decodeToken = getUserDetails().mobileno;
+      if (decodeToken) {
+        const mobile: string = decodeToken.toString();
+        if (decodeToken !== null) {
+          console.log(mobile);
+          const { code, message, error } = await SendOtp(mobile);
+          console.log(code);
+          console.log(message);
+          console.log(error);
+          if (error) {
+            toast.error("Unable to Send OTP!");
+            throw new Error("UNABLE_TO_SEND_OTP");
+          }
+          return 0;
+        }
+        return mobile;
+      }
+    }
+  } catch (error) {
+    throw new Error(error);
+  }
+};
 
 const OtpPassword: React.FC = () => {
   const router = useRouter();
-
-  //Send otp to clinet mobile phone.
-  useEffect(() => {
-    handleLogin();
-  }, []);
-
-  const handleRedirect = () => {
-    router.push("/");
-  };
-
+  const [isLoading, setIsLoading] = useState(false);
   const [boxOne, setBoxOneValue] = React.useState("");
   const [boxTwo, setBoxTwoValue] = React.useState("");
   const [boxThree, setBoxThreeValue] = React.useState("");
@@ -30,28 +56,28 @@ const OtpPassword: React.FC = () => {
   const [boxFive, setBoxFiveValue] = React.useState("");
   const [boxSix, setBoxSixValue] = React.useState("");
   const [userMobile, setuserMobile] = useState<string>("");
+  const handleRedirect = () => {
+    router.push("/");
+  };
 
-  const handleLogin = async () => {
-    //decrypt jwt token
-    const token = localStorage.getItem("token");
-    console.log(token);
-    const parseToken = token ? JSON.parse(token) : null;
-    if (parseToken === null) {
-      toast.error("Token was Empty!");
-      handleRedirect();
-    } else {
-      //get mobile number then send the otp
-      const decodeToken = jwt.decode(parseToken);
-      if (decodeToken) {
-        const mobile: string = decodeToken.mobile_no;
-        setuserMobile(mobile);
-        if (decodeToken !== null) {
-          const { code, message, error } = await SendOtp(mobile);
-          if (error) toast.error("Unable to Send OTP!");
+  useEffect(() => {
+    if (!isLoading) {
+      try {
+        const result = handleLogin();
+        setuserMobile(getUserDetails().mobileno.toString());
+      } catch (error) {
+        console.log(error);
+        if (error.message === "UNABLE_TO_SEND_OTP") {
+          toast.error("Unable to Send Otp");
+        } else {
+          handleRedirect();
+          throw new Error(error);
         }
+      } finally {
+        setIsLoading(false);
       }
     }
-  };
+  }, [isLoading]);
 
   const handleOnChangeOne = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target instanceof HTMLInputElement) {
@@ -108,6 +134,9 @@ const OtpPassword: React.FC = () => {
     const otpCode = `${boxOne}${boxTwo}${boxThree}${boxFour}${boxFive}${boxSix}`;
     console.log(`User Mobile: ${userMobile}`);
     const { code, message, error } = await ValidateOTP(userMobile, otpCode);
+    console.log(error);
+    console.log(message);
+    console.log(code);
     if (error) toast.error(message);
     if (+code === 1) {
       router.push("/dashboard");
@@ -204,7 +233,10 @@ const OtpPassword: React.FC = () => {
           <div className="text-center">
             <h2 className="text-l text-gray-500">
               Haven’t received a code?{" "}
-              <span className="text-red-900 underline hover:opacity-90">
+              <span
+                className="text-red-900 underline hover:opacity-90"
+                onClick={handleLogin}
+              >
                 Resend
               </span>
             </h2>

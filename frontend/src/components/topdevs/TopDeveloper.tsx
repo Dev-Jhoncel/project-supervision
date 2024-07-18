@@ -16,7 +16,6 @@ const randomIndex = Math.floor(Math.random() * profilePic.length);
 const getTopDev = async () => {
   const result = await getTopDevelopers(1, 0, 10);
   const { data } = result;
-
   data.map((dev: DeveloperDetails) => {
     const formattedProject = {
       name: `${dev.first_name} ${dev.last_name}`,
@@ -24,10 +23,10 @@ const getTopDev = async () => {
       ratings: dev.points,
       profilePicture: profilePic[randomIndex],
     };
-    initialDevelopersData.length = 0;
-    initialDevelopersData.push(formattedProject);
+    if (data.length > initialDevelopersData.length) {
+      initialDevelopersData.push(formattedProject);
+    }
   });
-
   return result;
 };
 
