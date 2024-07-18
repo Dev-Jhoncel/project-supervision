@@ -24,7 +24,7 @@ export class DeveloperService {
   }
 
   findAll() {
-    return this.prisma.developer.findMany();
+    return this.prisma.developer.findMany({ where: { isActive: 1 } });
   }
 
   findTopDevelopers(skips: number, takes: number) {
@@ -34,6 +34,13 @@ export class DeveloperService {
       take: +takes,
       orderBy: {
         points: 'desc',
+      },
+      include: {
+        tech_stack: true,
+        task: {
+          select: { projectId: true },
+          distinct: ['projectId'],
+        },
       },
     });
   }

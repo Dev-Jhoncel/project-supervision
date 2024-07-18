@@ -7,9 +7,13 @@ import {
   Param,
   Delete,
   Version,
+  HttpStatus,
+  HttpException,
+  Put,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
+import CUSTOM_RESPONSE from 'src/response/custom-response/CustomResponse';
 import { UpdateTaskDto } from './dto/update-task.dto';
 
 @Controller('task')
@@ -22,10 +26,20 @@ export class TaskController {
     return this.taskService.create(createTaskDto);
   }
 
-  @Get()
+  @Get('all-tasks/:id')
   @Version('1')
-  findAll() {
-    return this.taskService.findAll();
+  async findAll(@Param('id') id: number) {
+    try {
+      const response = await this.taskService.findAll(+id);
+      return CUSTOM_RESPONSE.getCustomResponse(
+        HttpStatus.OK,
+        'Success',
+        response,
+      );
+    } catch (error) {
+      //Unpredicted Error
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
   }
 
   @Get(':id')
@@ -44,6 +58,12 @@ export class TaskController {
   @Version('1')
   update(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
     return this.taskService.update(+id, updateTaskDto);
+  }
+
+  @Put(':id')
+  @Version('1')
+  put(@Param('id') id: string, @Body() updateTaskDto: UpdateTaskDto) {
+    return this.taskService.put(+id, updateTaskDto);
   }
 
   @Delete(':id')

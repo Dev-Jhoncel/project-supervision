@@ -29,19 +29,20 @@ model developer {
 }
 
 model projects {
-  id         Int       @id @default(autoincrement())
-  project    String    @default("")
-  due_date   DateTime? @db.Date
-  created_at DateTime  @default(now())
-  updated_at DateTime  @default(now())
-  team_id    Int?
-  user_id    Int?
-  status     String    @default("")
-  team       team?     @relation(fields: [team_id], references: [id])
-  user       user?     @relation(fields: [user_id], references: [id])
-  isActive   Int       @default(1)
-  task       task?     @relation(fields: [taskId], references: [id])
-  taskId     Int?
+  id          Int       @id @default(autoincrement())
+  project     String    @default("")
+  due_date    DateTime? @db.Date
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @default(now())
+  team_id     Int?
+  user_id     Int?
+  status      String    @default("")
+  team        team?     @relation(fields: [team_id], references: [id])
+  user        user?     @relation(fields: [user_id], references: [id])
+  isActive    Int       @default(1)
+  task        task?     @relation(fields: [taskId], references: [id])
+  taskId      Int?
+  developerId Int?
 
   @@index([team_id], map: "projects_team_id_fkey")
   @@index([user_id], map: "projects_userId_fkey")
@@ -71,6 +72,7 @@ model task {
   developer      developer  @relation(fields: [developerId], references: [id])
   developerId    Int
   projectId      Int
+  projectName    String     @default("")
   projects       projects[]
 
   @@index([user_id], map: "task_userId_fkey")
