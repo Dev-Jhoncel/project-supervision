@@ -1,10 +1,11 @@
 import { PROJECTS_URL } from "@/constants/config";
 import axios from "axios";
 
-export const selectProjects = (id: number) => {
+export const selectUniqueProjects = (id: number) => {
   const data = {
     id: id,
   };
+
   const instance = axios.create({
     baseURL: PROJECTS_URL,
     headers: {
@@ -13,12 +14,14 @@ export const selectProjects = (id: number) => {
   });
 
   const result = instance
-    .get(`/active-projects/${+id}`)
+    .get(`/${+id}`)
     .then((response) => {
-      return response.data.data;
+      console.log(response.data);
+      return response.data;
     })
     .catch((error) => {
       const errorResult = { code: 0, message: error.message, error: true };
+      console.error(errorResult);
       return errorResult;
     });
 

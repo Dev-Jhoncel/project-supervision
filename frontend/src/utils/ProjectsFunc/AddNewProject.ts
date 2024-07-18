@@ -24,7 +24,7 @@ export const addProjects = (
   const result = instance
     .post(`/`, data)
     .then((response) => {
-      return response.data.data;
+      return response.data;
     })
     .catch((error) => {
       const errorResult = { code: 0, message: error.message, error: true };

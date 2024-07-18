@@ -6,8 +6,17 @@ import Layout from "@/components/Layout";
 import Modal from "@/components/generalModal/Modal";
 import Profile from "@/components/profiledeveloper/Profile";
 import Loader from "@/components/loader/Loader";
+import { getTopDevelopers } from "@/utils/DeveloperFunc/SelectTopDev";
+import { DeveloperDetails } from "@/interfaces/IDeveloperDetails";
+import { selectUniqueProjects } from "@/utils/ProjectsFunc/SpecificProject";
+import { updateDeveloperDetails } from "@/utils/DeveloperFunc/UpdateDeveoperDwetails";
+import { EditParams } from "@/interfaces/IEditDeveloperParams";
+import { addDevelopers } from "@/utils/DeveloperFunc/AddDeveloper";
+import { deleteDevelopers } from "@/utils/DeveloperFunc/DeleteDeveloper";
+import toast from "react-hot-toast";
 
 interface Developer {
+  id: number;
   name: string;
   department: string;
   project: number;
@@ -17,55 +26,61 @@ interface Developer {
   email: string;
   phone: string;
   skills: string[];
-  projects: { name: string; status: string }[];
+  projects?: { name: string; status: string }[];
 }
 
+const profilePic = ["cprofile.jpg", "fprofile.jpg", "jprofile.jpg"];
+const randomIndex = Math.floor(Math.random() * profilePic.length);
+
 const initialDevelopersData: Developer[] = [
-  {
-    name: "Christine Mae Ocana",
-    department: "ML Wallet - Backend",
-    project: 7,
-    status: "Vacant",
-    ratings: 5,
-    profilePicture: "cprofile.jpg",
-    email: "christine@example.com",
-    phone: "123-456-7890",
-    skills: ["Java", "Spring Boot", "SQL"],
-    projects: [
-      { name: "Project A", status: "Done" },
-      { name: "Project B", status: "Ongoing" },
-    ],
-  },
-  {
-    name: "Francis Cutamora",
-    department: "ML Wallet - Backend",
-    project: 10,
-    status: "Vacant",
-    ratings: 5,
-    profilePicture: "fprofile.jpg",
-    email: "francis@example.com",
-    phone: "123-456-7890",
-    skills: ["Node.js", "Express", "MongoDB"],
-    projects: [
-      { name: "Project C", status: "Done" },
-      { name: "Project D", status: "Ongoing" },
-    ],
-  },
-  {
-    name: "Jovie Jurac",
-    department: "ML Wallet - Backend",
-    project: 9,
-    status: "Busy",
-    ratings: 4,
-    profilePicture: "jprofile.jpg",
-    email: "jovie@example.com",
-    phone: "123-456-7890",
-    skills: ["React", "Redux", "TypeScript"],
-    projects: [
-      { name: "Project E", status: "Done" },
-      { name: "Project F", status: "Ongoing" },
-    ],
-  },
+  // {
+  //   id: 1,
+  //   name: "Christine Mae Ocana",
+  //   department: "ML Wallet - Backend",
+  //   project: 7,
+  //   status: "Vacant",
+  //   ratings: 5,
+  //   profilePicture: "cprofile.jpg",
+  //   email: "christine@example.com",
+  //   phone: "123-456-7890",
+  //   skills: ["Java", "Spring Boot", "SQL"],
+  //   projects: [
+  //     { name: "Project A", status: "Done" },
+  //     { name: "Project B", status: "Ongoing" },
+  //   ],
+  // },
+  // {
+  //   id: 2,
+  //   name: "Francis Cutamora",
+  //   department: "ML Wallet - Backend",
+  //   project: 10,
+  //   status: "Vacant",
+  //   ratings: 5,
+  //   profilePicture: "fprofile.jpg",
+  //   email: "francis@example.com",
+  //   phone: "123-456-7890",
+  //   skills: ["Node.js", "Express", "MongoDB"],
+  //   projects: [
+  //     { name: "Project C", status: "Done" },
+  //     { name: "Project D", status: "Ongoing" },
+  //   ],
+  // },
+  // {
+  //   id: 3,
+  //   name: "Jovie Jurac",
+  //   department: "ML Wallet - Backend",
+  //   project: 9,
+  //   status: "Busy",
+  //   ratings: 4,
+  //   profilePicture: "jprofile.jpg",
+  //   email: "jovie@example.com",
+  //   phone: "123-456-7890",
+  //   skills: ["React", "Redux", "TypeScript"],
+  //   projects: [
+  //     { name: "Project E", status: "Done" },
+  //     { name: "Project F", status: "Ongoing" },
+  //   ],
+  // },
 ];
 
 const DeveloperTable: React.FC = () => {
@@ -73,6 +88,7 @@ const DeveloperTable: React.FC = () => {
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
   const [loading, setLoading] = useState(true); // Initially true to show loader
   const [editDeveloper, setEditDeveloper] = useState<Developer>({
+    id: 0,
     name: "",
     department: "",
     project: 0,
@@ -95,29 +111,117 @@ const DeveloperTable: React.FC = () => {
 
   const router = useRouter();
 
+  const selectProject = async (id: number) => {
+    const result = await selectUniqueProjects(id);
+    return result.data;
+  };
+  const getTopDev = async (skips: number, takes: number) => {
+    const SKIP = skips === null ? 0 : skips;
+    const TAKE = takes === null ? 10 : takes;
+    const result = await getTopDevelopers(1, +SKIP, +TAKE);
+    const { data } = result;
+    let arrList = [];
+    data.map(async (dev: DeveloperDetails, index) => {
+      if (dev.task[index] !== undefined) {
+        const selectProjects = await selectProject(dev.task[index].projectId);
+        arrList.push({
+          name: selectProjects.project,
+          status: selectProjects.status,
+        });
+      }
+
+      //Populate Developer interface with response from API.
+      const developerDetails: Developer = {
+        id: dev.id,
+        name: `${dev.first_name} ${dev.last_name}`,
+        department: dev.role,
+        status: dev.isAvailable === 1 ? "Vacant" : "Busy",
+        ratings: dev.points,
+        email: dev.email,
+        project: arrList.length,
+        profilePicture: profilePic[randomIndex],
+        skills: dev.tech_stack.map((row) => row.title),
+        phone: `${dev.mobile_no}`,
+        projects: arrList,
+      };
+
+      if (data.length > initialDevelopersData.length) {
+        if (
+          initialDevelopersData.find((item) => item.id === dev.id) === undefined
+        ) {
+          initialDevelopersData.push(developerDetails);
+        }
+      }
+      console.log(initialDevelopersData);
+    });
+    setDevelopers(initialDevelopersData);
+  };
+
   useEffect(() => {
-    // Simulating a fetch call with a timeout
-    setTimeout(() => {
-      setDevelopers(initialDevelopersData);
+    // Simulating a fetch call with a timeoutconst devs = await
+    setTimeout(async () => {
       setLoading(false); // Set loading to false after data fetch
-    }, 1000); // Change this timeout duration to simulate loading time
+    }, 1000);
+    // Change this timeout duration to simulate loading time
+    getTopDev(null, null);
   }, []);
 
   const handleStatusChange = (index: number, newStatus: string) => {
     const updatedDevelopers = [...developers];
     updatedDevelopers[index].status = newStatus;
+    const editParams: EditParams = {
+      id: updatedDevelopers[index].id,
+      name: "",
+      status: newStatus,
+      department: "",
+      ratings: 0,
+    };
+    console.log(editParams);
+    const updatAvailability = updateDeveloperDetails(editParams, true);
+    console.log(updatAvailability);
     setDevelopers(updatedDevelopers);
   };
 
-  const handleAddDeveloper = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleAddDeveloper = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (editingIndex !== null) {
       const updatedDevelopers = [...developers];
       updatedDevelopers[editingIndex] = editDeveloper;
       setDevelopers(updatedDevelopers);
+      const editParams: EditParams = {
+        id: editDeveloper.id,
+        name: editDeveloper.name,
+        status: editDeveloper.status,
+        department: editDeveloper.department,
+        ratings: editDeveloper.ratings,
+      };
+
+      const updateDeveloper = await updateDeveloperDetails(editParams, false);
+      if (!updateDeveloper) {
+        toast.error("Unable to update developer details");
+      } else {
+        toast.success("Successfully to updated developer details");
+      }
+
+      //Setting index to null or reset setEditingIndex
       setEditingIndex(null);
     } else {
+      const splitname = editDeveloper.name.toString().split(" ");
+
+      // Add Developer
+      const developerDetails: DeveloperDetails = {
+        first_name: splitname[0].trim().toUpperCase(),
+        last_name: splitname[1].trim().toUpperCase(),
+        role: editDeveloper.department,
+        points: +editDeveloper.ratings,
+        isAvailable: editDeveloper.status === "Vacant" ? 1 : 0,
+        isActive: 1,
+      };
+      console.log(developerDetails);
+      const addDeveloperDetails = await addDevelopers(developerDetails);
+      console.log(addDeveloperDetails);
+      editDeveloper.profilePicture = profilePic[randomIndex];
       if (editDeveloper.ratings > 5) {
         setIsRatingExceededModalOpen(true);
         return;
@@ -125,6 +229,7 @@ const DeveloperTable: React.FC = () => {
       setDevelopers([...developers, editDeveloper]);
     }
     setEditDeveloper({
+      id: 0,
       name: "",
       department: "",
       project: 0,
@@ -150,6 +255,8 @@ const DeveloperTable: React.FC = () => {
       const updatedDevelopers = developers.filter(
         (dev) => dev !== selectedDeveloperToDelete
       );
+      const deleteDev = deleteDevelopers(selectedDeveloperToDelete.id);
+      console.log(deleteDev);
       setDevelopers(updatedDevelopers);
       setSelectedDeveloperToDelete(null); // Reset selected developer to delete
     }
@@ -171,6 +278,7 @@ const DeveloperTable: React.FC = () => {
   const handleCancelEdit = () => {
     setEditingIndex(null);
     setEditDeveloper({
+      id: 0,
       name: "",
       department: "",
       project: 0,
@@ -188,6 +296,7 @@ const DeveloperTable: React.FC = () => {
   const handleAddDeveloperModal = () => {
     setEditingIndex(null);
     setEditDeveloper({
+      id: 0,
       name: "",
       department: "",
       project: 0,

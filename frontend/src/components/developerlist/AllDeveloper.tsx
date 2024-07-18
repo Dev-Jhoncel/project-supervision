@@ -8,7 +8,6 @@ interface AllDeveloper {
 }
 
 const listAllDeveloper: AllDeveloper[] = [];
-
 const getAvailableDev = async () => {
   const result = await getAvailableDevelopers(1, 0, 10);
   const { data } = result;
@@ -19,8 +18,15 @@ const getAvailableDev = async () => {
       name: `${dev.first_name} ${dev.last_name}`,
       email: dev.email,
     };
-    listAllDeveloper.length = 0;
-    listAllDeveloper.push(formattedProject);
+
+    if (data.length > listAllDeveloper.length) {
+      if (
+        listAllDeveloper.find((item) => item.name === formattedProject.name) ===
+        undefined
+      ) {
+        listAllDeveloper.push(formattedProject);
+      }
+    }
   });
   return result;
 };

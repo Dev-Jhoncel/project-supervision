@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
 
     const getProjects = await selectProjects(decodeToken?.id);
     console.log(getProjects);
-    if (getProjects) {
+    if (getProjects !== null) {
       allProject.push(getProjects);
 
       const delayedProject = getProjects.filter(

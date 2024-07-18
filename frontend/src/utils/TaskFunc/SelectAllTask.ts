@@ -1,24 +1,27 @@
-import { PROJECTS_URL } from "@/constants/config";
+import { TASK_URL } from "@/constants/config";
 import axios from "axios";
 
-export const selectProjects = (id: number) => {
+export const selectTasks = (id: number) => {
   const data = {
     id: id,
   };
+  console.log(id);
   const instance = axios.create({
-    baseURL: PROJECTS_URL,
+    baseURL: TASK_URL,
     headers: {
       "Content-Type": "application/json",
     },
   });
 
   const result = instance
-    .get(`/active-projects/${+id}`)
+    .get(`/all-tasks/${+id}`)
     .then((response) => {
+      console.log(response);
       return response.data.data;
     })
     .catch((error) => {
       const errorResult = { code: 0, message: error.message, error: true };
+      console.error(errorResult);
       return errorResult;
     });
 

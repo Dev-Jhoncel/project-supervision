@@ -17,9 +17,11 @@ const Signup: React.FC = () => {
   const [mobileNumber, setMobileNumber] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [isClick, setIsClick] = useState(false);
   const router = useRouter();
 
   const handleSignup = () => {
+    setIsClick(true);
     if (!firstName.trim()) {
       setErrorMessage("Please enter your first name.");
     }
@@ -93,6 +95,11 @@ const Signup: React.FC = () => {
         "Password must contain at least one uppercase letter, one lowercase letter, and one digit."
       );
     }
+
+    if (isClick) {
+      registerCurrentUser();
+    }
+
     // Clear error message if all validations pass
     setErrorMessage("");
   };

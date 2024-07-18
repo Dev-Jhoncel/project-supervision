@@ -17,6 +17,7 @@ import { deleteProject } from "@/utils/ProjectsFunc/DeleteProject";
 import { updateStatus } from "@/utils/ProjectsFunc/UpdateStatus";
 import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
 import { UserDetails } from "@/interfaces/IUserDetails";
+import { Toast } from "react-toastify/dist/components";
 
 interface Project {
   id: number;
@@ -52,11 +53,12 @@ const ProjectCard: React.FC = () => {
   const [currentUserId, setCurrentUserID] = useState(0);
   const [newDueDate, setNewDueDate] = useState<string>("");
   const [newProjectId, setNewProjectId] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
   const [newStatus, setNewStatus] = useState<
     "Ongoing" | "Delay" | "Completed" | "At Risk"
   >("Ongoing");
   const [editIndex, setEditIndex] = useState<number | null>(null);
-  const currUserId = useRef(currentUserId);
+
   const router = useRouter();
 
   const handleStatusChange = async (index: number, status: string) => {
@@ -72,7 +74,12 @@ const ProjectCard: React.FC = () => {
       id: project.id,
       status: status,
     };
-    const result = await updateStatus(data);
+    if (project.id !== 0) {
+      const result = await updateStatus(data);
+      result.code === "SUCCESS"
+        ? toast.success("Successfully Updated Status")
+        : toast.error("Unable to update status");
+    }
   };
 
   const handleCancelEdit = () => {
@@ -111,12 +118,10 @@ const ProjectCard: React.FC = () => {
 
   //Get User Info
   useEffect(() => {
-    const fetchSelctedPorjects = async () => {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        router.push("/");
-      }
+    const fetchSelctedProjects = async () => {
       const decodeToken = getUserDetails();
+      setCurrentUserID(decodeToken?.id);
+      console.log(decodeToken?.id);
       const data = await selectProjects(decodeToken?.id);
       const ArrayList: Project[] = [];
       data.map((m: SelectedProjects) => {
@@ -131,11 +136,14 @@ const ProjectCard: React.FC = () => {
         setProjects(ArrayList);
       });
     };
-    fetchSelctedPorjects();
-  }, [currUserId]);
+    fetchSelctedProjects();
+  }, []);
 
-  const handleSaveProject = async (e: React.FormEvent) => {
+  const handleSaveProject = async (e: React.FormEvent<HTMLInputElement>) => {
     e.preventDefault();
+    console.log(newProject);
+    console.log(newDueDate);
+    console.log(currentUserId);
     if (newProject && newDueDate && currentUserId) {
       const newProjectObj: Project = {
         id: newProjectId,
@@ -151,30 +159,43 @@ const ProjectCard: React.FC = () => {
         status: newProjectObj.status,
       };
 
-      //Check If User is going to add new project
-      if (isAddProject) {
-        //Request to Add New Project
-        const result = await addProjects(
-          newProject,
-          currentUserId,
-          new Date(newDueDate),
-          newStatus
-        );
-
-        console.log(result);
-        result.code !== "SUCCESS"
-          ? toast.error(result.message)
-          : toast.success("Success added new project");
-      } else {
-        //Request to Edit Project
-        if (edit_params) {
-          const editResult = await editProject(edit_params);
-          console.log(editResult);
-          editResult.code !== "SUCCESS"
-            ? toast.error(editResult.message)
-            : toast.success("Successfully edited project");
-
-          console.log(editResult.message);
+      if (!isLoading) {
+        setIsLoading(true);
+        try {
+          //Request to Add New Project
+          if (isAddProject) {
+            if (
+              newDueDate !== null &&
+              currentUserId !== 0 &&
+              newStatus !== null &&
+              newProject !== null
+            ) {
+              const result = await addProjects(
+                newProject,
+                currentUserId,
+                new Date(newDueDate),
+                newStatus
+              );
+              if (result.code === "SUCCESS") {
+                toast.success("Success added new project");
+              } else {
+                console.log(result);
+                toast.error("Unable to add new project");
+              }
+            }
+          }
+          if (!isAddProject) {
+            const editResult = await editProject(edit_params);
+            console.log(editResult);
+            editResult.code !== "SUCCESS"
+              ? toast.error(editResult.message)
+              : toast.success("Successfully edited project");
+          }
+        } catch (error) {
+          console.error(error);
+          toast.error(error);
+        } finally {
+          setIsLoading(false);
         }
       }
 

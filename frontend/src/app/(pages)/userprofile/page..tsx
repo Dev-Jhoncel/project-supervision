@@ -7,6 +7,7 @@ import { AiFillEdit } from "react-icons/ai";
 import { MdOutlineLogout } from "react-icons/md";
 import Modal from "@/components/generalModal/Modal";
 import EditProfile from "@/components/editprofile/EditProfile";
+import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
 
 const UserProfile: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
@@ -27,7 +28,7 @@ const UserProfile: React.FC = () => {
   const closeEditProfile = () => {
     setIsEditProfileOpen(false);
   };
-
+  const user = getUserDetails();
   return (
     <>
       <div className="flex flex-col items-center h-screen text-black p-10">
@@ -42,19 +43,23 @@ const UserProfile: React.FC = () => {
           </div>
         </div>
         <div className="text-center">
-          <h1 className="font-bold text-2xl">Jhoncel Cadiena</h1>
+          <h1 className="font-bold text-2xl">
+            {user.first_name} {user.last_name}
+          </h1>
           <h2 className="text-sm">Project Manager</h2>
         </div>
         <div className="mt-14 w-full flex justify-around -ml-8 gap-1">
           <div className="flex items-center gap-1">
             <MdEmail className="text-sm" />
             <h1 className="text-sm hover:italic cursor-pointer">
-              jhoncel@example.com
+              {user.email}
             </h1>
           </div>
           <div className="flex items-center gap-1">
             <FaPhoneAlt className="text-sm" />
-            <h1 className="text-sm hover:italic cursor-pointer">09123456789</h1>
+            <h1 className="text-sm hover:italic cursor-pointer">
+              {user.mobileno}
+            </h1>
           </div>
         </div>
         <div className="mt-14 ml-9 w-full">

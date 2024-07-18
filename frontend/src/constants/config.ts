@@ -4,6 +4,7 @@ export const SIGN_UP_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/regis
 export const EMAILER_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mailer/send-email`;
 export const PROJECTS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/projects`;
 export const DEVELOPERS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/developer`;
+export const TASK_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/task`;
 
 //OTP CONFIGURATION
 export const OTP_BASE_URL = `${process.env.NEXT_PUBLIC_OTP_URL}`;
