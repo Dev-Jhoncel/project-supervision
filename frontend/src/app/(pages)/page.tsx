@@ -7,12 +7,12 @@ import ProjectPage from "./projects/page";
 import UserProfile from "./userprofile/page.";
 
 const HomePage = () => {
-  // return <Login />;
+  return <Login />;
   // return<Signup/>;
   // return <OtpPassword />;
   // return <Sidebar />;
   // return <ProjectPage />;
-  return <UserProfile />;
+  //return <UserProfile />;
 };
 
 export default HomePage;

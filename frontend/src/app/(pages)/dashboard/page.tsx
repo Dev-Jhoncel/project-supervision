@@ -13,12 +13,13 @@ import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
 import { Project } from "@/interfaces/IProjects";
 import { selectStatusEnum } from "@/utils/StatusEnumFunc/SelectStatus";
 import Loader from "@/components/loader/Loader";
+import { Router } from "next/router";
 
 const Dashboard: React.FC = () => {
   const [totalActiveProject, setTotalActiveprojects] = useState(0);
   const [totalDelayedProject, setTotalDelayedProject] = useState("");
   const [totalAtRiskPorject, setTotalAtRiskProject] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [allActiveProject, setallActiveProject] = useState<Project[]>();
 
   interface ProjectListProps {
@@ -41,7 +42,6 @@ const Dashboard: React.FC = () => {
 
   const getAllPorject = async () => {
     const decodeToken = getUserDetails();
-
     const getProjects = await selectProjects(decodeToken?.id);
     console.log(getProjects);
     if (getProjects !== null) {
@@ -68,12 +68,17 @@ const Dashboard: React.FC = () => {
       setallActiveProject(selectedProject);
       setTotalActiveprojects(getProjects.length);
     }
+    return 1;
   };
 
   useEffect(() => {
     try {
-      setLoading(true);
-      getAllPorject();
+      const result = async () => await getAllPorject();
+      result();
+      setTimeout(async () => {
+        //Set loading to false after data fetch
+        await new Promise((resolve) => setTimeout(resolve, 3000));
+      }, 1000);
     } catch (error) {
       console.log(error);
       setLoading(false);

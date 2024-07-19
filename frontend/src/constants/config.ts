@@ -1,10 +1,16 @@
 //Project Supervision Endpoint
+//Server Side
 export const LOGIN_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/login`;
+export const CHANGE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/change`;
+export const RESET_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/reset`;
 export const SIGN_UP_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/auth/register`;
 export const EMAILER_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/mailer/send-email`;
 export const PROJECTS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/projects`;
 export const DEVELOPERS_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/developer`;
 export const TASK_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/task`;
+
+//Client Side
+export const BASE_URL = `${process.env.NEXT_PUBLIC_CLIENT_URL}`;
 
 //OTP CONFIGURATION
 export const OTP_BASE_URL = `${process.env.NEXT_PUBLIC_OTP_URL}`;

@@ -56,15 +56,21 @@ const OtpPassword: React.FC = () => {
   const [boxFive, setBoxFiveValue] = React.useState("");
   const [boxSix, setBoxSixValue] = React.useState("");
   const [userMobile, setuserMobile] = useState<string>("");
+  const [buttonText, setButtonText] = useState("Submit");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const handleRedirect = () => {
     router.push("/");
   };
 
   useEffect(() => {
     if (!isLoading) {
+      setButtonText("Sending Otp");
+      setIsButtonDisabled(true);
       try {
         const result = handleLogin();
         setuserMobile(getUserDetails().mobileno.toString());
+        setButtonText("Submit");
+        setIsButtonDisabled(false);
       } catch (error) {
         console.log(error);
         if (error.message === "UNABLE_TO_SEND_OTP") {
@@ -75,6 +81,8 @@ const OtpPassword: React.FC = () => {
         }
       } finally {
         setIsLoading(false);
+        setButtonText("Submit");
+        setIsButtonDisabled(false);
       }
     }
   }, [isLoading]);
@@ -131,6 +139,8 @@ const OtpPassword: React.FC = () => {
   };
 
   const handleSubmit = async () => {
+    setButtonText("Validating Otp");
+    setIsButtonDisabled(true);
     const otpCode = `${boxOne}${boxTwo}${boxThree}${boxFour}${boxFive}${boxSix}`;
     console.log(`User Mobile: ${userMobile}`);
     const { code, message, error } = await ValidateOTP(userMobile, otpCode);
@@ -141,7 +151,8 @@ const OtpPassword: React.FC = () => {
     if (+code === 1) {
       router.push("/dashboard");
     }
-
+    setButtonText("Submit");
+    setIsButtonDisabled(false);
     console.log(code);
   };
 
@@ -229,7 +240,11 @@ const OtpPassword: React.FC = () => {
               />
             </div>
           </div>
-          <Button title="Submit" onClick={handleSubmit} />
+          <Button
+            title={`${buttonText}`}
+            onClick={handleSubmit}
+            disabled={isButtonDisabled}
+          />
           <div className="text-center">
             <h2 className="text-l text-gray-500">
               Haven’t received a code?{" "}

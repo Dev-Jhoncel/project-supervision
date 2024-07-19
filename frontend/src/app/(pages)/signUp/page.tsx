@@ -18,6 +18,8 @@ const Signup: React.FC = () => {
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isClick, setIsClick] = useState(false);
+  const [buttonText, setButtonText] = useState("Submit");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const router = useRouter();
 
   const handleSignup = () => {
@@ -48,7 +50,8 @@ const Signup: React.FC = () => {
       mobile_no: mobileNumber.trim(),
       password: password.trim(),
     };
-
+    setButtonText("Submitting");
+    setIsButtonDisabled(true);
     //Integrating to endpoint register
     const registerCurrentUser = async () => {
       const registerUser = await fetch(SIGN_UP_URL, {
@@ -64,11 +67,15 @@ const Signup: React.FC = () => {
       console.log(registerUser.status);
 
       if (registerUser.status != 201) {
+        setButtonText("SignUp");
+        setIsButtonDisabled(false);
         const { code, message, data } = result;
         let error_message =
           registerUser.status === 500 ? "Unable to add user" : message;
         toast.error(error_message);
       } else {
+        setButtonText("SignUp");
+        setIsButtonDisabled(false);
         const response: IResponse = result;
         console.log(response);
         toast.success(response.message);
@@ -233,7 +240,11 @@ const Signup: React.FC = () => {
             <p className="text-red-500 text-sm">{errorMessage}</p>
           )}
           <div className="pt-4">
-            <Button title="SignUp" onClick={handleSignup} />
+            <Button
+              title="SignUp"
+              onClick={handleSignup}
+              disabled={isButtonDisabled}
+            />
             <h2 className="text-l text-center pt-3 ">
               Have an account?{" "}
               <a

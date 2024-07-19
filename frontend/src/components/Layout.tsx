@@ -11,7 +11,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <Sidebar />
       <div className="flex-1">
         <Header />
-        <div className="p-6">{children}</div>
+        <div className="p-6 bg-white">{children}</div>
       </div>
     </div>
   );

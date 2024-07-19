@@ -1,22 +1,24 @@
-import { TASK_URL } from "@/constants/config";
+import { CHANGE_URL } from "@/constants/config";
 import axios from "axios";
 
-export const selectTasks = (id: number) => {
+export const changeCredentials = (password: string, code: string) => {
   const data = {
-    id: id,
+    reset_code: code,
+    password: password,
   };
-  console.log(id);
+
   const instance = axios.create({
-    baseURL: TASK_URL,
+    baseURL: CHANGE_URL,
     headers: {
       "Content-Type": "application/json",
     },
   });
 
   const result = instance
-    .get(`/all-tasks/${+id}`)
+    .patch(`/`, data)
     .then((response) => {
       console.log(response);
+      console.log(response.data);
       return response.data;
     })
     .catch((error) => {

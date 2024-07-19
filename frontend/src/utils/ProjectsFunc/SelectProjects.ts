@@ -15,6 +15,7 @@ export const selectProjects = (id: number) => {
   const result = instance
     .get(`/active-projects/${+id}`)
     .then((response) => {
+      console.log(response.data);
       return response.data.data;
     })
     .catch((error) => {
