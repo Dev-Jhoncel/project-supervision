@@ -41,10 +41,14 @@ const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [buttonText, setButtonText] = useState("Submit");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const router = useRouter();
 
   const handleLogin = async () => {
+    setButtonText("Loading");
+    setIsButtonDisabled(true);
     if (!email.trim()) {
       setErrorMessage("Please enter your email.");
       return;
@@ -71,16 +75,20 @@ const Login: React.FC = () => {
     const result = await getLogin.json();
     console.log(getLogin.status);
     if (getLogin.status != 200) {
+      setButtonText("Login");
       const { code, message, data } = result;
-      setErrorMessage(message);
+      console.log(message);
+      setErrorMessage(`${message}`);
+      setIsButtonDisabled(false);
     } else {
       const response: IResponse = result;
+      setButtonText("Login");
       toast.success("Successfully Login");
       localStorage.setItem("token", JSON.stringify(response.data));
       router.push("/otpCode");
+      setIsButtonDisabled(false);
+      setErrorMessage("");
     }
-    setErrorMessage("");
-    // Proceed with login logic
   };
 
   const handleForgotPassword = (event: React.MouseEvent<HTMLAnchorElement>) => {
@@ -154,7 +162,11 @@ const Login: React.FC = () => {
           >
             Forgot Password?
           </a>
-          <Button title="Login" onClick={handleLogin} />
+          <Button
+            title={`${buttonText}`}
+            onClick={handleLogin}
+            disabled={isButtonDisabled}
+          />
           <h2 className="text-lg text-center">
             {`Don't have an account yet?`}{" "}
             <a

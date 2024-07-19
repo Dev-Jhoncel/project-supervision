@@ -111,6 +111,7 @@ model user {
   email_address String     @unique @default("")
   password      String     @unique @default("")
   mobile_no     String     @default("")
+  reset_code    String     @default("")
   projects      projects[]
   task          task[]
 }

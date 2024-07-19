@@ -1,18 +1,25 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Image from "next/image";
 import "../login/login.css";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
 import Button from "@/components/buttons/button";
+import { changeCredentials } from "@/utils/UserDetailsFunc/ChangeCredentials";
+import { toast } from "react-hot-toast";
 
-const Login: React.FC = () => {
+const Login: React.FC = (code: string) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const router = useRouter();
+  const searchParams = useSearchParams();
+  const [buttonText, setButtonText] = useState("Submit");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent, context) => {
     e.preventDefault();
+
+    setButtonText("Submitting");
+    setIsButtonDisabled(true);
 
     if (!password.trim()) {
       setErrorMessage("Please enter your password.");
@@ -29,8 +36,26 @@ const Login: React.FC = () => {
       return;
     }
 
-    setErrorMessage("");
-    // Handle successful password setting here
+    if (password && confirmPassword) {
+      const changeResult = await changeCredentials(
+        password,
+        searchParams.get("code")
+      );
+      console.log(changeResult);
+      const { code, message, error } = changeResult;
+      console.log(error);
+      if (error) {
+        toast.error("Wrong Code");
+        setErrorMessage("Wrong Code");
+        setButtonText("Submit");
+        console.log(message);
+      }
+      if (code === "SUCCESS") {
+        toast.success("Success Updating Credentials");
+        setButtonText("Submit");
+        setErrorMessage("");
+      }
+    }
   };
 
   return (
@@ -86,7 +111,11 @@ const Login: React.FC = () => {
           {errorMessage && (
             <p className="text-red-500 text-sm">{errorMessage}</p>
           )}
-          <Button title="Submit" />
+          <Button
+            title={`${buttonText}`}
+            onClick={handleLogin}
+            disabled={isButtonDisabled}
+          />
         </form>
       </div>
     </div>

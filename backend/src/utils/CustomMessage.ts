@@ -7,6 +7,8 @@ class CustomCode {
         return 'CREATED';
       case 404:
         return 'NO_DATA_FOUND';
+      case 403:
+        return 'NO_CODE_FOUND';
       case 400:
         return 'INVALID_CREDENTIALS';
       case 500:

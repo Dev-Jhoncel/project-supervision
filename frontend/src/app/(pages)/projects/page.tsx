@@ -18,6 +18,7 @@ import { updateStatus } from "@/utils/ProjectsFunc/UpdateStatus";
 import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
 import { UserDetails } from "@/interfaces/IUserDetails";
 import { Toast } from "react-toastify/dist/components";
+import Loader from "@/components/loader/Loader";
 
 interface Project {
   id: number;
@@ -246,7 +247,11 @@ const ProjectCard: React.FC = () => {
     router.push("/modules");
   };
 
-  return (
+  return isLoading ? (
+    <div>
+      <Loader />
+    </div>
+  ) : (
     <div className="p-6 flex flex-col gap-9">
       <div>
         <h1 className="font-bold text-2xl">Projects</h1>

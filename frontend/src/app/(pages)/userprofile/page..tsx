@@ -8,10 +8,12 @@ import { MdOutlineLogout } from "react-icons/md";
 import Modal from "@/components/generalModal/Modal";
 import EditProfile from "@/components/editprofile/EditProfile";
 import { getUserDetails } from "@/utils/UserDetailsFunc/UserDetails";
+import { useRouter } from "next/navigation";
 
 const UserProfile: React.FC = () => {
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const route = useRouter();
 
   const openModal = () => {
     setIsOpenModal(true);
@@ -86,7 +88,9 @@ const UserProfile: React.FC = () => {
             <div className="flex items-center justify-center gap-4 cursor-pointer">
               <p onClick={closeModal}>Cancel</p>
               <span
-                onClick={() => console.log("Logged out")}
+                onClick={() => {
+                  route.push("/login");
+                }}
                 className="bg-red-800 text-white text-sm px-4 py-2 rounded-2xl hover:bg-red-900 cursor-pointer"
               >
                 Logout

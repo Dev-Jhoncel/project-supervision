@@ -4,13 +4,38 @@ import Image from "next/image";
 import Button from "@/components/buttons/button";
 import "../login/login.css";
 import { sendEmail } from "@/utils/SendEmailFunc/SendEmail";
+import { BASE_URL } from "@/constants/config";
+import { resetCredentials } from "@/utils/UserDetailsFunc/SendRestCode";
+import toast from "react-hot-toast";
+import { generateRandomString } from "@/utils/CheckingFunc/StringRandomizer";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [buttonText, setButtonText] = useState("Submit");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
+    setButtonText("Submitting");
+    setIsButtonDisabled(true);
     console.log("Forgot password request submitted with email:", email);
-    if (email) sendEmail(email, "You forgot your Password");
+    const randomString = generateRandomString(10);
+    if (email && randomString) {
+      const result = await resetCredentials(email, randomString);
+      console.log(result);
+      if (result.code === "SUCCESS") {
+        sendEmail(
+          email,
+          `Refer to this link to reset your password: ${BASE_URL}/changepassword?code=${randomString}`
+        );
+        toast.success("Email Sent!");
+        setButtonText("Submit");
+        setIsButtonDisabled(false);
+      } else {
+        toast.error("Unable to send Email.");
+        setButtonText("Submit");
+        setIsButtonDisabled(false);
+      }
+    }
   };
 
   return (
@@ -53,7 +78,11 @@ const ForgotPassword = () => {
             placeholder="username@gmail.com"
             className="p-6 rounded-md border border-gray-300 -mt-4"
           />
-          <Button title="Submit" onClick={handleLogin} />
+          <Button
+            title={`${buttonText}`}
+            onClick={handleLogin}
+            disabled={isButtonDisabled}
+          />
         </form>
       </div>
     </div>

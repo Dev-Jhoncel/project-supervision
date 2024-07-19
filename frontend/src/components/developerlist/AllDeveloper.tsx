@@ -34,7 +34,7 @@ const getAvailableDev = async () => {
 const AllDeveloper = () => {
   getAvailableDev();
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row bg-white">
       <div className="bg-white-100 shadow-lg border rounded-2xl w-full h-full">
         <div className="px-6 py-2">
           <h1 className="font-bold text-md  text-red-900">

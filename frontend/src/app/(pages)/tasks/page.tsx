@@ -4,24 +4,48 @@ import Layout from "@/components/Layout";
 import { FaPlus, FaCheck, FaEdit, FaTrash } from "react-icons/fa";
 import Modal from "@/components/generalModal/Modal";
 import Loader from "@/components/loader/Loader";
-import { selectTaskEnum } from "@/utils/StatusEnumFunc/TaskStatus";
 
 type Task = {
   id: number;
   title: string;
+  description: string;
   level: "High" | "Medium" | "Low";
   status: "Done" | "Review";
+  dueDate: string;
 };
 
 const initialTasks: Task[] = [
-  { id: 1, title: "Check the user dashboard", level: "High", status: "Done" },
-  { id: 2, title: "Lorem lorem lorem", level: "Medium", status: "Review" },
-  { id: 3, title: "Landing Page Lorem", level: "Medium", status: "Done" },
+  {
+    id: 1,
+    title: "Check the user dashboard",
+    description: "Test",
+    level: "High",
+    status: "Done",
+    dueDate: "2024-07-20",
+  },
+  {
+    id: 2,
+    title: "Lorem lorem lorem",
+    description: "Test",
+    level: "Medium",
+    status: "Review",
+    dueDate: "2024-07-21",
+  },
+  {
+    id: 3,
+    title: "Landing Page Lorem",
+    description: "no",
+    level: "Medium",
+    status: "Done",
+    dueDate: "2024-07-22",
+  },
   {
     id: 4,
     title: "Lorem lorem lorem lorem lorem lorem lorem lorem",
+    description: "no",
     level: "Low",
     status: "Review",
+    dueDate: "2024-07-23",
   },
 ];
 
@@ -32,11 +56,15 @@ const TaskList: React.FC = () => {
   );
   const [editTaskId, setEditTaskId] = useState<number | null>(null);
   const [editedTitle, setEditedTitle] = useState<string>("");
+  const [editedDescription, setEditedDescription] = useState<string>("");
+  const [editedDueDate, setEditedDueDate] = useState<string>("");
   const [isOpenModal, setIsOpenModal] = useState(false);
   const [newTaskTitle, setNewTaskTitle] = useState<string>("");
+  const [newTaskDescription, setNewTaskDescription] = useState<string>("");
   const [newTaskLevel, setNewTaskLevel] = useState<"High" | "Medium" | "Low">(
     "Low"
   );
+  const [newTaskDueDate, setNewTaskDueDate] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [taskToDelete, setTaskToDelete] = useState<number | null>(null);
 
@@ -50,9 +78,8 @@ const TaskList: React.FC = () => {
     const updatedTasks = tasks.map((task) =>
       task.id === taskId
         ? {
-            title: task.title,
+            ...task,
             status: task.status === "Done" ? "Review" : "Done",
-            level: selectTaskEnum(task.level),
           }
         : task
     );
@@ -76,17 +103,28 @@ const TaskList: React.FC = () => {
     if (taskToEdit && taskToEdit.status !== "Done") {
       setEditTaskId(taskId);
       setEditedTitle(taskToEdit.title);
+      setEditedDescription(taskToEdit.description);
+      setEditedDueDate(taskToEdit.dueDate);
     }
   };
 
   const handleSaveEdit = () => {
     if (editTaskId !== null) {
       const updatedTasks = tasks.map((task) =>
-        task.id === editTaskId ? { ...task, title: editedTitle } : task
+        task.id === editTaskId
+          ? {
+              ...task,
+              title: editedTitle,
+              description: editedDescription,
+              dueDate: editedDueDate,
+            }
+          : task
       );
       setTasks(updatedTasks);
       setEditTaskId(null);
       setEditedTitle("");
+      setEditedDescription("");
+      setEditedDueDate("");
     }
   };
 
@@ -114,14 +152,18 @@ const TaskList: React.FC = () => {
     const newTask: Task = {
       id: tasks.length + 1,
       title: newTaskTitle,
+      description: newTaskDescription,
       level: newTaskLevel,
       status: "Review",
+      dueDate: newTaskDueDate,
     };
 
     setTasks([...tasks, newTask]);
     setIsOpenModal(false);
     setNewTaskTitle("");
+    setNewTaskDescription("");
     setNewTaskLevel("Low");
+    setNewTaskDueDate("");
   };
 
   return (
@@ -137,7 +179,7 @@ const TaskList: React.FC = () => {
           </div>
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-semibold mb-8">{`Today's Tasks`}</h2>
+              <h2 className="text-2xl font-semibold mb-8">Today's Tasks</h2>
               <div className="ml-auto">
                 <button
                   onClick={() => setIsOpenModal(true)}
@@ -201,16 +243,19 @@ const TaskList: React.FC = () => {
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-white">
                   <tr>
-                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500 ">
+                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500">
                       Task
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500 ">
+                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500">
                       Level
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500 ">
+                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500">
                       Status
                     </th>
-                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500 ">
+                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500">
+                      Due Date
+                    </th>
+                    <th className="px-6 py-3 text-left text-sm font-bold text-black-500">
                       Actions
                     </th>
                   </tr>
@@ -219,22 +264,47 @@ const TaskList: React.FC = () => {
                   {filteredTasks.map((task) => (
                     <tr key={task.id} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="flex items-center space-x-3">
-                          <input
-                            type="checkbox"
-                            checked={task.status === "Done"}
-                            onChange={() => handleCheckboxChange(task.id)}
-                          />
-                          {editTaskId === task.id ? (
+                        <div className="flex flex-col">
+                          <div className="flex items-center">
                             <input
-                              type="text"
-                              className="border border-gray-300 rounded-md px-2 py-1"
-                              value={editedTitle}
-                              onChange={(e) => setEditedTitle(e.target.value)}
+                              type="checkbox"
+                              checked={task.status === "Done"}
+                              onChange={() => handleCheckboxChange(task.id)}
+                              disabled={task.status === "Done"}
+                              className="form-checkbox h-4 w-4 text-blue-600 border-gray-300 rounded-md focus:ring-blue-500"
                             />
-                          ) : (
-                            <span className="text-sm">{task.title}</span>
-                          )}
+                            <div className="ml-4">
+                              {editTaskId === task.id ? (
+                                <input
+                                  type="text"
+                                  className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                                  value={editedTitle}
+                                  onChange={(e) =>
+                                    setEditedTitle(e.target.value)
+                                  }
+                                />
+                              ) : (
+                                <span className=" text-sm font-medium text-black">
+                                  {task.title}
+                                </span>
+                              )}
+                              <div className="mt-2 ml-8">
+                                {editTaskId === task.id ? (
+                                  <textarea
+                                    className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                                    value={editedDescription}
+                                    onChange={(e) =>
+                                      setEditedDescription(e.target.value)
+                                    }
+                                  />
+                                ) : (
+                                  <span className="text-sm text-gray-500">
+                                    {task.description}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -259,6 +329,20 @@ const TaskList: React.FC = () => {
                           {task.status}
                         </span>
                       </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        {editTaskId === task.id ? (
+                          <input
+                            type="date"
+                            className="border border-gray-300 rounded-md px-2 py-1 w-full"
+                            value={editedDueDate}
+                            onChange={(e) => setEditedDueDate(e.target.value)}
+                          />
+                        ) : (
+                          <span className="text-sm text-gray-500">
+                            {task.dueDate}
+                          </span>
+                        )}
+                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                         <div className="flex items-center space-x-4">
                           {editTaskId === task.id ? (
@@ -274,7 +358,7 @@ const TaskList: React.FC = () => {
                                 task.status === "Done"
                                   ? "cursor-not-allowed opacity-50"
                                   : ""
-                              }`}
+                              } ${task.status === "Done" ? "hidden" : ""}`}
                               onClick={() => handleEditTask(task.id)}
                               disabled={task.status === "Done"}
                             >
@@ -282,7 +366,9 @@ const TaskList: React.FC = () => {
                             </button>
                           )}
                           <button
-                            className=" text-red-700 hover:text-red-900"
+                            className={` text-red-700 hover:text-red-900 ${
+                              task.status === "Done" ? "hidden" : ""
+                            }`}
                             onClick={() => setTaskToDelete(task.id)}
                           >
                             <FaTrash />
@@ -316,22 +402,16 @@ const TaskList: React.FC = () => {
                       onChange={(e) => setNewTaskTitle(e.target.value)}
                     />
                   </div>
-                  <div className="mb-10 relative">
-                    <input
-                      type="text"
+                  <div className="mb-10">
+                    <textarea
                       placeholder="Description"
-                      className="w-full p-2 pr-10 border border-gray-300 rounded-full drop-shadow-xl"
+                      className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                      value={newTaskDescription}
+                      onChange={(e) => setNewTaskDescription(e.target.value)}
                     />
                   </div>
-                  <div className="flex justify-between mb-4">
-                    <div className="w-1/2 pr-2">
-                      <input
-                        type="date"
-                        placeholder="Due"
-                        className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
-                      />
-                    </div>
-                    <div className="w-1/2 pl-2">
+                  <div className="flex justify-between space-x-4">
+                    <div className="w-1/2">
                       <select
                         className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
                         value={newTaskLevel}
@@ -348,6 +428,15 @@ const TaskList: React.FC = () => {
                         <option value="Medium">Medium</option>
                         <option value="Low">Low</option>
                       </select>
+                    </div>
+                    <div className="w-1/2">
+                      <input
+                        type="date"
+                        placeholder="Due Date"
+                        className="w-full p-2 border border-gray-300 rounded-full drop-shadow-xl"
+                        value={newTaskDueDate}
+                        onChange={(e) => setNewTaskDueDate(e.target.value)}
+                      />
                     </div>
                   </div>
                   <div className="flex justify-end p-4 gap-2">
